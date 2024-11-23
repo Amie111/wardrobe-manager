@@ -1,13 +1,245 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+@layer components {
+  /* 布局相关 */
+  .layout-container {
+    @apply min-h-screen bg-gray-50;
+  }
+
+  .main-content {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8;
+  }
+
+  /* 头部相关 */
+  .header {
+    @apply bg-white shadow;
+  }
+
+  .header-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4;
+  }
+
+  /* 按钮相关 */
+  .btn-primary {
+    @apply flex items-center px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600;
+  }
+
+  .btn-secondary {
+    @apply flex items-center px-4 py-2 text-gray-900 hover:bg-gray-100 rounded-lg transition-colors duration-200;
+  }
+
+  .btn-submit {
+    @apply w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500;
+  }
+
+  /* 表单相关 */
+  .form-container {
+    @apply max-w-md mx-auto bg-white p-6 rounded-lg shadow;
+  }
+
+  .form-label {
+    @apply block text-sm font-medium text-gray-700;
+  }
+
+  .form-input {
+    @apply w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2;
+  }
+
+  /* 标签相关 */
+  .tag {
+    @apply inline-flex items-center px-2 py-1 rounded-full text-sm bg-blue-100 text-blue-700;
+  }
+
+  .tag-container {
+    @apply flex flex-wrap gap-2 mb-2;
+  }
+
+  /* 图片上传区域 */
+  .upload-area {
+    @apply flex flex-col items-center justify-center w-full h-64 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors duration-200;
+  }
+
+  .preview-image {
+    @apply w-full h-64 object-cover rounded-lg;
+  }
+
+  /* 网格布局 */
+  .grid-layout {
+    @apply grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4;
+  }
+
+  .grid-item {
+    @apply bg-white rounded-lg shadow overflow-hidden;
+  }
+
+  /* 布局工具类 */
+  .flex-center {
+    @apply flex items-center justify-center;
+  }
+
+  .flex-between {
+    @apply flex justify-between items-center;
+  }
+
+  .flex-col-center {
+    @apply flex flex-col items-center justify-center;
+  }
+
+  /* 间距类 */
+  .space-y-default {
+    @apply space-y-6;
+  }
+
+  .space-y-small {
+    @apply space-y-2;
+  }
+
+  .nav-space {
+    @apply mt-4;
+  }
+
+  .nav-items-space {
+    @apply flex space-x-8;
+  }
+
+  /* 图标类 */
+  .icon-lg {
+    @apply w-6 h-6 mr-3;
+  }
+
+  .icon-md {
+    @apply w-5 h-5 mr-2;
+  }
+
+  .icon-sm {
+    @apply w-4 h-4;
+  }
+
+  .icon-upload {
+    @apply w-12 h-12 text-gray-400;
+  }
+
+  /* 文字类 */
+  .text-title {
+    @apply text-2xl font-bold;
+  }
+
+  .text-hint {
+    @apply text-sm text-gray-500;
+  }
+
+  .text-hint-sm {
+    @apply text-xs text-gray-400 mt-1;
+  }
+
+  /* 图片相关 */
+  .img-container {
+    @apply relative pt-[100%];
+  }
+
+  .img-wrapper {
+    @apply absolute inset-0 bg-gray-100 flex items-center justify-center;
+  }
+
+  .img-full {
+    @apply w-full h-full object-cover;
+  }
+
+  /* 删除按钮 */
+  .delete-btn {
+    @apply absolute top-2 right-2 p-1 bg-white rounded-full shadow;
+  }
+
+  .tag-delete-btn {
+    @apply ml-1 text-blue-500 hover:text-blue-700;
+  }
+
+  /* 空状态提示 */
+  .empty-state {
+    @apply col-span-full text-center py-12 text-gray-500;
+  }
+
+  /* 导航标签容器 */
+  .tags-filter-container {
+    @apply nav-space flex space-x-2;
+  }
+
+  /* 图标间距 */
+  .icon-space {
+    @apply mr-2;
+  }
+
+  /* 表单布局 */
+  .form-group {
+    @apply space-y-2;
+  }
+
+  .form-wrapper {
+    @apply space-y-6;
+  }
+
+  .relative-wrapper {
+    @apply relative;
+  }
+
+  /* 上传区域 */
+  .upload-content {
+    @apply flex-col-center pt-5 pb-6;
+  }
+
+  .upload-input {
+    @apply hidden;
+  }
+
+  /* 标签按钮 */
+  .tag-btn {
+    @apply ml-1 text-blue-500 hover:text-blue-700;
+  }
+
+  /* 标签输入区域 */
+  .tag-input-wrapper {
+    @apply flex gap-2;
+  }
+
+  .tag-btn-shrink {
+    @apply flex items-center px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-blue-600 shadow-sm shrink-0 text-sm transition-colors duration-200;
+  }
+
+  .category-btn {
+    @apply btn-secondary hover:bg-blue-50 transition-colors duration-200;
+  }
+
+  .category-btn.active {
+    @apply bg-blue-100;
+  }
+
+  .tag-filter {
+    @apply tag hover:bg-blue-200 cursor-pointer transition-colors duration-200;
+  }
+
+  .tag-filter.active {
+    @apply bg-blue-200;
+  }
+
+  .filter-status {
+    @apply mb-4 p-2 bg-gray-50 rounded-md flex items-center justify-between shadow-sm;
+  }
+
+  .filter-tags {
+    @apply flex flex-wrap gap-2;
+  }
+
+  .active-filter {
+    @apply inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm bg-gray-200 text-blue-800;
+  }
+
+  .remove-filter-btn {
+    @apply p-0.5 hover:bg-blue-200 rounded-full transition-colors duration-200 ml-1;
+  }
+
+  .clear-filter {
+    @apply text-sm text-blue-500 hover:text-blue-700 ml-4 transition-colors duration-200;
+  }
 }
