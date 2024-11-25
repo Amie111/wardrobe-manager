@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { X, Upload } from "lucide-react";
 import { clothingItems, addOutfit } from "../store/data";
 import { useNavigate } from "react-router-dom";
+import TagInput from "../components/TagInput";
+import ImageUpload from "../components/ImageUpload";
 
 const CreateOutfit = () => {
   const [selectedItems, setSelectedItems] = useState([]);
@@ -20,40 +22,18 @@ const CreateOutfit = () => {
     }
   };
 
-  const handlePhotoSelect = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-      setPhoto(file);
-    }
-  };
-
-  const handleAddTag = (e) => {
-    e.preventDefault();
-    if (newTag.trim() && !tags.includes(newTag.trim())) {
-      setTags([...tags, newTag.trim()]);
-      setNewTag("");
-    }
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!outfitName || selectedItems.length === 0) {
       alert("请填写穿搭名称并选择至少一件衣物");
       return;
     }
-
     const newOutfit = {
       name: outfitName,
       items: selectedItems.map((item) => item.id),
       tags: tags,
       photo: preview,
     };
-
     addOutfit(newOutfit);
     alert("穿搭创建成功！");
     navigate("/outfits");
@@ -101,78 +81,20 @@ const CreateOutfit = () => {
         </div>
 
         {/* 上传穿搭照片 */}
-        <div className="form-group">
-          <label className="form-label">上传穿搭照片（可选）</label>
-          <div className="mt-2">
-            {preview ? (
-              <div className="relative">
-                <img
-                  src={preview}
-                  alt="穿搭预览"
-                  className="w-full max-h-96 object-cover rounded-lg"
-                />
-                <button
-                  type="button"
-                  onClick={() => {
-                    setPhoto(null);
-                    setPreview(null);
-                  }}
-                  className="delete-btn"
-                >
-                  <X className="icon-sm" />
-                </button>
-              </div>
-            ) : (
-              <label className="upload-area h-48">
-                <div className="upload-content">
-                  <Upload className="icon-upload" />
-                  <p className="text-hint">点击上传穿搭照片</p>
-                </div>
-                <input
-                  type="file"
-                  className="upload-input"
-                  accept="image/*"
-                  onChange={handlePhotoSelect}
-                />
-              </label>
-            )}
-          </div>
-        </div>
+        <ImageUpload
+          preview={preview}
+          setPreview={setPreview}
+          setPhoto={setPhoto}
+          label="上传穿搭照片（可选）"
+        />
 
         {/* 标签输入区域 */}
-        <div className="form-group">
-          <label className="form-label">添加标签</label>
-          <div className="tag-container">
-            {tags.map((tag, index) => (
-              <span key={index} className="tag">
-                {tag}
-                <button
-                  type="button"
-                  onClick={() => setTags(tags.filter((t) => t !== tag))}
-                  className="tag-delete-btn"
-                >
-                  <X className="icon-sm" />
-                </button>
-              </span>
-            ))}
-          </div>
-          <div className="tag-input-wrapper">
-            <input
-              type="text"
-              value={newTag}
-              onChange={(e) => setNewTag(e.target.value)}
-              className="form-input"
-              placeholder="输入标签"
-            />
-            <button
-              type="button"
-              onClick={handleAddTag}
-              className="tag-btn-shrink"
-            >
-              添加
-            </button>
-          </div>
-        </div>
+        <TagInput
+          tags={tags}
+          setTags={setTags}
+          newTag={newTag}
+          setNewTag={setNewTag}
+        />
 
         <button type="submit" className="btn-submit">
           创建穿搭
