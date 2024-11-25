@@ -23,7 +23,6 @@ export let outfits = [
     id: "1",
     createdAt: new Date().toISOString().split("T")[0],
     name: "藏蓝韩系穿搭",
-    description: "藏蓝韩系穿搭",
     items: ["1", "2"], // 引用现有衣物的 ID
     tags: ["韩系", "休闲"],
     photo: null, // 实际穿搭照片
@@ -47,7 +46,7 @@ export const addClothingItem = (item) => {
   return newItem;
 };
 
-// 添加新的穿搭组合
+// 添加新的穿搭组合并返回新添加的穿搭组合
 export const addOutfit = (outfit) => {
   const newOutfit = {
     ...outfit,
