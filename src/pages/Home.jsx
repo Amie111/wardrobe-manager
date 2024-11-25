@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import ClothingGrid from "../components/Grid";
+import ClothingGrid from "../components/ClothingGrid";
 import { X } from "lucide-react";
 import { clothingItems } from "../store/data";
 import { categories } from "../config/config";

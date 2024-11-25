@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Upload, X } from "lucide-react";
-import { categories } from "../../config/config";
-import { addClothingItem } from "../../store/data";
+import { categories } from "../config/config";
+import { addClothingItem } from "../store/data";
 import { useNavigate } from "react-router-dom";
 
 const UploadForm = () => {

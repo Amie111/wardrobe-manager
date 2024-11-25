@@ -1,8 +1,8 @@
 import React from "react";
 import { PlusCircle, Home, Shirt } from "lucide-react";
-import { categories } from "../../config/config";
+import { categories } from "../config/config";
 import { useNavigate, useLocation } from "react-router-dom";
-import { allTags } from "../../store/data";
+import { allTags } from "../store/data";
 
 const Layout = ({ children }) => {
   // 添加 useNavigate hook
@@ -62,6 +62,10 @@ const Layout = ({ children }) => {
               <span className="text-title">我的衣橱</span>
             </button>
             <div className="flex space-x-2">
+              <button className="btn-primary" onClick={handleOutfitClick}>
+                <Shirt className="icon-md" />
+                我的穿搭
+              </button>
               <button className="btn-primary" onClick={handleCreateOutfitClick}>
                 <Shirt className="icon-md" />
                 创建穿搭

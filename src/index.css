@@ -242,4 +242,45 @@
   .clear-filter {
     @apply text-sm text-blue-500 hover:text-blue-700 ml-4 transition-colors duration-200;
   }
+
+  /* 穿搭卡片相关 */
+  .outfit-card {
+    @apply bg-white rounded-lg shadow-md overflow-hidden;
+  }
+
+  .outfit-photo-container {
+    @apply relative aspect-square;
+  }
+
+  .outfit-photo {
+    @apply w-full h-full object-cover;
+  }
+
+  .outfit-items-grid {
+    @apply grid grid-cols-2 gap-1 p-1;
+  }
+
+  .outfit-item-photo {
+    @apply w-full aspect-square object-cover rounded-md;
+  }
+
+  .outfit-info {
+    @apply p-4;
+  }
+
+  .outfit-name {
+    @apply text-lg font-semibold mb-2;
+  }
+
+  .outfit-description {
+    @apply text-sm text-gray-600 mb-3;
+  }
+
+  .page-header {
+    @apply mb-6;
+  }
+
+  .page-title {
+    @apply text-2xl font-bold text-gray-900;
+  }
 }

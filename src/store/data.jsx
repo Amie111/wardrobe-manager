@@ -27,6 +27,7 @@ export let outfits = [
     tags: ["韩系", "休闲"],
     photo: null, // 实际穿搭照片
     category: "all",
+    description: "藏蓝韩系穿搭",
   },
 ];
 
