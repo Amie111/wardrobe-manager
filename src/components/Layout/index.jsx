@@ -1,5 +1,5 @@
 import React from "react";
-import { PlusCircle, Home } from "lucide-react";
+import { PlusCircle, Home, Shirt } from "lucide-react";
 import { categories } from "../../config/config";
 import { useNavigate, useLocation } from "react-router-dom";
 import { allTags } from "../../store/data";
@@ -14,9 +14,19 @@ const Layout = ({ children }) => {
   const handleAddClick = () => {
     navigate("/upload");
   };
-
+  // 添加处理点击“我的衣橱”的函数
   const handleHomeClick = () => {
     navigate("/");
+  };
+
+  // 添加处理点击“创建穿搭”的函数
+  const handleCreateOutfitClick = () => {
+    navigate("/create-outfit");
+  };
+
+  // 添加处理点击“我的穿搭”的函数
+  const handleOutfitClick = () => {
+    navigate(`/outfits`);
   };
 
   // 添加处理点击类型的函数
@@ -51,10 +61,16 @@ const Layout = ({ children }) => {
               <Home className="icon-lg" />
               <span className="text-title">我的衣橱</span>
             </button>
-            <button className="btn-primary" onClick={handleAddClick}>
-              <PlusCircle className="icon-md" />
-              添加新衣物
-            </button>
+            <div className="flex space-x-2">
+              <button className="btn-primary" onClick={handleCreateOutfitClick}>
+                <Shirt className="icon-md" />
+                创建穿搭
+              </button>
+              <button className="btn-primary" onClick={handleAddClick}>
+                <PlusCircle className="icon-md" />
+                添加新衣物
+              </button>
+            </div>
           </div>
 
           <nav className="nav-space">
