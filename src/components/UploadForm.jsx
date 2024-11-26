@@ -13,6 +13,7 @@ const UploadForm = () => {
   const [selectedCategory, setSelectedCategory] = useState(""); // 添加类别状态
   const navigate = useNavigate(); // 添加 useNavigate hook
 
+  // 处理表单提交
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Implement upload logic

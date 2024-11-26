@@ -2,15 +2,15 @@ import React from "react";
 import { X } from "lucide-react";
 
 const TagInput = ({ tags, setTags, newTag, setNewTag }) => {
+  // 处理添加新标签
   const handleAddTag = (e) => {
     e.preventDefault();
+    // 检查标签是否为空，并且不重复
     if (newTag.trim() && !tags.includes(newTag.trim())) {
       setTags([...tags, newTag.trim()]);
+      // 清空输入框
       setNewTag("");
     }
-  };
-  const handleRemoveTag = (tagToRemove) => {
-    setTags(tags.filter((tag) => tag !== tagToRemove));
   };
 
   return (

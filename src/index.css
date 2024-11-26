@@ -283,4 +283,79 @@
   .page-title {
     @apply text-2xl font-bold text-gray-900;
   }
+
+  /* 选择衣物区域样式 */
+  .outfit-category-select {
+    @apply form-input mb-4 w-full;
+  }
+
+  .outfit-items-grid {
+    @apply grid grid-cols-2 md:grid-cols-4 gap-4 mt-2;
+  }
+
+  .outfit-item-card {
+    @apply cursor-pointer relative transition-all duration-200 hover:opacity-90;
+  }
+
+  .outfit-item-card.selected {
+    @apply ring-2 ring-blue-500;
+  }
+
+  .outfit-item-image {
+    @apply w-full aspect-square object-cover rounded-lg;
+  }
+
+  /* 空状态提示 */
+  .outfit-empty-state {
+    @apply text-center py-8 text-gray-500;
+  }
+
+  .selected-items-preview {
+    @apply bg-gray-50 p-4 rounded-lg;
+  }
+
+  /* 创建穿搭页面相关 */
+  .create-outfit-container {
+    @apply form-container max-w-4xl;
+  }
+
+  .create-outfit-title {
+    @apply text-2xl font-bold mb-6;
+  }
+
+  .create-outfit-form {
+    @apply space-y-6;
+  }
+
+  .outfit-name-input {
+    @apply form-input;
+  }
+
+  .selected-preview-container {
+    @apply selected-items-preview mb-4;
+  }
+
+  .selected-preview-title {
+    @apply text-lg font-medium mb-2;
+  }
+
+  .selected-items-grid {
+    @apply grid grid-cols-4 gap-2;
+  }
+
+  .selected-item-wrapper {
+    @apply relative;
+  }
+
+  .selected-item-image {
+    @apply w-full aspect-square object-cover rounded-lg;
+  }
+
+  .remove-item-btn {
+    @apply absolute top-1 right-1 p-1 bg-red-500 rounded-full text-white;
+  }
+
+  .remove-icon {
+    @apply w-3.5 h-3.5;
+  }
 }
