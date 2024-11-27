@@ -1,46 +1,124 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { X } from "lucide-react";
+import { allTags } from "../store/data";
 
 const TagInput = ({ tags, setTags, newTag, setNewTag }) => {
-  // 处理添加新标签
-  const handleAddTag = (e) => {
-    e.preventDefault();
-    // 检查标签是否为空，并且不重复
-    if (newTag.trim() && !tags.includes(newTag.trim())) {
-      setTags([...tags, newTag.trim()]);
-      // 清空输入框
-      setNewTag("");
+  const [suggestions, setSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const inputRef = useRef(null);
+  const suggestionsRef = useRef(null);
+
+  // 处理输入变化
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    // 检查是否输入了全角或半角逗号
+    if (value.endsWith(",") || value.endsWith("，")) {
+      const tagValue = value.slice(0, -1);
+      setNewTag(tagValue);
+      addTag(tagValue);
+      return;
+    }
+    setNewTag(value);
+
+    // 搜索匹配的标签
+    if (value.trim()) {
+      const matchedTags = allTags.filter(
+        (tag) =>
+          tag.toLowerCase().includes(value.toLowerCase()) && !tags.includes(tag)
+      );
+      setSuggestions(matchedTags);
+      setShowSuggestions(true);
+    } else {
+      setSuggestions([]);
+      setShowSuggestions(false);
     }
   };
 
+  // 处理按键事件
+  const handleKeyDown = (e) => {
+    if (e.key === "," || e.key === "Enter" || e.key === "，") {
+      e.preventDefault();
+      addTag();
+    }
+  };
+
+  // 添加标签
+  const addTag = (tagToAdd = newTag) => {
+    const trimmedTag = tagToAdd.trim();
+    if (trimmedTag && !tags.includes(trimmedTag)) {
+      setTags([...tags, trimmedTag]);
+      setNewTag("");
+      setSuggestions([]);
+      setShowSuggestions(false);
+    }
+  };
+
+  // 删除标签
+  const removeTag = (tagToRemove) => {
+    setTags(tags.filter((tag) => tag !== tagToRemove));
+  };
+
+  // 选择建议的标签
+  const selectSuggestion = (suggestion) => {
+    addTag(suggestion);
+    inputRef.current?.focus();
+  };
+
+  // 点击外部关闭建议列表
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        suggestionsRef.current &&
+        !suggestionsRef.current.contains(event.target)
+      ) {
+        setShowSuggestions(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   return (
-    <div className="form-group">
-      <label className="form-label">添加标签</label>
-      <div className="tag-container">
+    <div className="tag-input-container">
+      <label className="form-label">标签</label>
+      <div className="tag-list">
         {tags.map((tag, index) => (
           <span key={index} className="tag">
             {tag}
             <button
               type="button"
-              onClick={() => setTags(tags.filter((t) => t !== tag))}
-              className="tag-delete-btn"
+              onClick={() => removeTag(tag)}
+              className="remove-tag-btn"
             >
-              <X className="icon-sm" />
+              <X className="tag-remove-icon" />
             </button>
           </span>
         ))}
       </div>
-      <div className="tag-input-wrapper">
+      <div className="relative">
         <input
+          ref={inputRef}
           type="text"
           value={newTag}
-          onChange={(e) => setNewTag(e.target.value)}
-          className="form-input"
-          placeholder="输入标签"
+          onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
+          className="tag-input"
+          placeholder="输入标签，按回车或逗号添加"
         />
-        <button type="button" onClick={handleAddTag} className="tag-btn-shrink">
-          添加
-        </button>
+        {showSuggestions && suggestions.length > 0 && (
+          <div ref={suggestionsRef} className="tag-suggestions">
+            {suggestions.map((suggestion, index) => (
+              <div
+                key={index}
+                className="tag-suggestion-item"
+                onClick={() => selectSuggestion(suggestion)}
+              >
+                {suggestion}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

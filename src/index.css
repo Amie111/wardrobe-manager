@@ -358,4 +358,28 @@
   .remove-icon {
     @apply w-3.5 h-3.5;
   }
+
+  .tag-input-container {
+    @apply w-full space-y-2;
+  }
+
+  .tag-input {
+    @apply w-full form-input;
+  }
+
+  .tag-suggestions {
+    @apply absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-32 overflow-auto;
+  }
+
+  .tag-suggestion-item {
+    @apply px-3 py-1.5 hover:bg-gray-100 cursor-pointer text-sm text-gray-700;
+  }
+
+  .remove-tag-btn {
+    @apply ml-1 p-0.5 hover:text-red-500 transition-colors duration-200;
+  }
+
+  .tag-remove-icon {
+    @apply w-3.5 h-3.5;
+  }
 }
