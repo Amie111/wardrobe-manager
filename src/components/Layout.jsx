@@ -1,7 +1,7 @@
-import React from "react";
-import { PlusCircle, Home, Shirt } from "lucide-react";
-import { categories } from "../config/config";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { Home, Shirt, PlusCircle } from "lucide-react";
+import { categories } from "../config/config";
 import { allTags } from "../store/data";
 
 const Layout = ({ children }) => {
@@ -9,8 +9,19 @@ const Layout = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const isHome = location.pathname === "/";
+  // 添加一个用于强制重新渲染的状态
+  const [, setForceUpdate] = useState({});
+  // 添加监听标签变化的 effect
+  useEffect(() => {
+    const forceUpdate = () => {
+      setForceUpdate({}); // 使用正确的 setState 函数
+    };
 
-  // 添加处理点击“添加新衣服”的函数
+    window.addEventListener("tagsUpdated", forceUpdate);
+    return () => window.removeEventListener("tagsUpdated", forceUpdate);
+  }, []);
+
+  // 导航处理函数
   const handleAddClick = () => {
     navigate("/upload");
   };

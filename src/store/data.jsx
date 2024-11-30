@@ -1,73 +1,174 @@
-// 存储所有衣物数据
-export let clothingItems = [
-  {
-    id: "1",
-    imageUrl: "https://placehold.co/300x300?text=Summer+Casual",
-    tags: ["夏季", "休闲"],
-    category: "tops",
-  },
-  {
-    id: "2",
-    imageUrl: "https://placehold.co/300x300?text=Spring+Formal",
-    tags: ["春秋", "正装"],
-    category: "bottoms",
-  },
-];
+import { clothingAPI, outfitAPI, tagAPI, outfitTagAPI } from "../services/api";
 
-// 存储所有标签
-export let allTags = ["所有", "最新", "夏季", "休闲", "春秋"];
+// 声明状态变量
+let clothingItems = [];
+let outfits = [];
+let allTags = [];
+let outfitTags = [];
 
-// 存储所有穿搭组合
-export let outfits = [
-  {
-    id: "1",
-    createdAt: new Date().toISOString().split("T")[0],
-    name: "藏蓝韩系穿搭",
-    items: ["1", "2"], // 引用现有衣物的 ID
-    tags: ["韩系", "休闲"],
-    photo: null, // 实际穿搭照片
-    category: "all",
-    description: "藏蓝韩系穿搭",
-  },
-];
+// 其他现有的导出
+export { clothingItems, outfits, allTags, outfitTags };
 
-// 添加新的衣物
-export const addClothingItem = (item) => {
-  const newItem = {
-    ...item,
-    id: String(clothingItems.length + 1), // 简单的 ID 生成
-  };
-  clothingItems = [...clothingItems, newItem];
-  // 更新标签列表
-  const newTags = item.tags.filter((tag) => !allTags.includes(tag));
-  if (newTags.length > 0) {
-    allTags = [...allTags, ...newTags];
+// 上传图片到 Cloudinary
+const uploadToCloudinary = async (file) => {
+  try {
+    // 创建 FormData
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append(
+      "upload_preset",
+      process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET
+    );
+
+    // 上传图片
+    const response = await fetch(
+      `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`,
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("Cloudinary 响应:", errorData);
+      throw new Error(`上传失败: ${errorData.error?.message || "未知错误"}`);
+    }
+
+    const data = await response.json();
+    return data.secure_url; // 返回图片URL
+  } catch (error) {
+    console.error("上传图片失败:", error);
+    throw error;
   }
-
-  return newItem;
 };
 
-// 添加新的穿搭组合并返回新添加的穿搭组合
-export const addOutfit = (outfit) => {
-  const newOutfit = {
-    ...outfit,
-    id: String(outfits.length + 1),
-    createdAt: new Date().toISOString().split("T")[0],
-  };
-  outfits = [...outfits, newOutfit];
-  // 更新标签列表
-  const newTags = outfit.tags.filter((tag) => !allTags.includes(tag));
-  if (newTags.length > 0) {
-    allTags = [...allTags, ...newTags];
+// 初始化数据
+export const initializeData = async () => {
+  try {
+    const [clothesResponse, outfitsResponse, tagsResponse, outfitTagsResponse] =
+      await Promise.allSettled([
+        clothingAPI.getAll(),
+        outfitAPI.getAll(),
+        tagAPI.getAll(),
+        outfitTagAPI.getAll(),
+      ]);
+
+    // 正确处理 Promise.allSettled 的结果
+    clothingItems =
+      clothesResponse.status === "fulfilled" ? clothesResponse.value : [];
+    outfits =
+      outfitsResponse.status === "fulfilled" ? outfitsResponse.value : [];
+    allTags =
+      Array.isArray(tagsResponse.value) && tagsResponse.status === "fulfilled"
+        ? tagsResponse.value.map((tag) => tag?.name).filter(Boolean)
+        : [];
+    outfitTags =
+      Array.isArray(outfitTagsResponse.value) &&
+      outfitTagsResponse.status === "fulfilled"
+        ? outfitTagsResponse.value.map((tag) => tag?.name).filter(Boolean)
+        : [];
+
+    // 触发更新事件
+    window.dispatchEvent(new CustomEvent("dataUpdated"));
+  } catch (error) {
+    console.error("初始化数据失败:", error);
+    return false;
   }
-  return newOutfit;
+};
+
+// 添加衣物
+export const addClothingItem = async (item) => {
+  try {
+    // 先上传图片到 Cloudinary
+    const imageUrl = await uploadToCloudinary(item.file);
+
+    // 创建新的衣物数据
+    const newItem = {
+      imageUrl,
+      category: item.category,
+      tags: item.tags,
+    };
+
+    // 保存到后端
+    const savedItem = await clothingAPI.add(newItem);
+    if (savedItem) {
+      clothingItems = [...clothingItems, savedItem];
+      // 触发更新事件
+      window.dispatchEvent(new CustomEvent("dataUpdated"));
+      return savedItem;
+    }
+    throw new Error("保存衣物失败");
+  } catch (error) {
+    console.error("添加衣物失败:", error);
+    throw error;
+  }
+};
+
+// 添加标签
+export const addTag = async (tagName) => {
+  try {
+    const savedTag = await tagAPI.add(tagName);
+    if (savedTag && savedTag.name) {
+      allTags = [...allTags, savedTag.name];
+      window.dispatchEvent(new CustomEvent("tagsUpdated"));
+      return savedTag;
+    }
+    throw new Error("保存标签失败");
+  } catch (error) {
+    console.error("添加标签失败:", error);
+    throw error;
+  }
+};
+
+// 添加穿搭标签
+export const addOutfitTag = async (tagData) => {
+  try {
+    const savedTag = await outfitTagAPI.add(tagData);
+    if (savedTag && savedTag.name) {
+      outfitTags = [...outfitTags, savedTag.name];
+      window.dispatchEvent(new CustomEvent("outfitTagsUpdated"));
+      return savedTag;
+    }
+    throw new Error("保存穿搭标签失败");
+  } catch (error) {
+    console.error("添加穿搭标签失败:", error);
+    throw error;
+  }
+};
+
+// 添加穿搭
+export const addOutfit = async (outfit) => {
+  try {
+    let photoUrl = null;
+    if (outfit.photo) {
+      photoUrl = await uploadToCloudinary(outfit.photo);
+    }
+
+    const outfitData = {
+      name: outfit.name,
+      items: outfit.items,
+      tags: outfit.tags,
+      photo: photoUrl,
+    };
+
+    const savedOutfit = await outfitAPI.add(outfitData);
+    if (savedOutfit) {
+      outfits = [...outfits, savedOutfit];
+      window.dispatchEvent(new CustomEvent("dataUpdated"));
+      return savedOutfit;
+    }
+    throw new Error("保存穿搭失败");
+  } catch (error) {
+    console.error("添加穿搭失败:", error);
+    throw error;
+  }
 };
 
 // 获取穿搭组合中所有的衣物
 export const getOutfitItems = (outfitId) => {
   const outfit = outfits.find((outfit) => outfit.id === outfitId);
   if (!outfit) return [];
-
   return outfit.items.map((itemId) =>
     clothingItems.find((item) => item.id === itemId)
   );

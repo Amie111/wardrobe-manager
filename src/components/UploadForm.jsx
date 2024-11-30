@@ -21,24 +21,31 @@ const UploadForm = () => {
       alert("请填写所有必要信息");
       return;
     }
-    // 创建新的衣物数据
-    const newItem = {
-      imageUrl: preview, //使用预览图片的 base64 数据
-      category: selectedCategory,
-      tags: tags,
-    };
-    // 添加新的衣物到存储中
-    addClothingItem(newItem);
-    // 重置表单
-    setSelectedFile(null);
-    setPreview(null);
-    setTags([]);
-    setNewTag("");
-    setSelectedCategory("");
-    // 提示用户添加成功
-    alert("衣物添加成功");
-    // 导航回主页
-    navigate("/");
+
+    try {
+      // 创建新的衣物数据
+      const newItem = {
+        file: selectedFile, // 传入 File 对象
+        category: selectedCategory,
+        tags: tags,
+      };
+
+      // 等待上传完成
+      await addClothingItem(newItem);
+
+      // 重置表单
+      setSelectedFile(null);
+      setPreview(null);
+      setTags([]);
+      setNewTag("");
+      setSelectedCategory("");
+
+      alert("衣物添加成功");
+      navigate("/");
+    } catch (error) {
+      alert("添加衣物失败,请重试");
+      console.error(error);
+    }
   };
 
   return (

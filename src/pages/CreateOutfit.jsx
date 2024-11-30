@@ -145,6 +145,7 @@ const CreateOutfit = () => {
           setTags={setTags}
           newTag={newTag}
           setNewTag={setNewTag}
+          isOutfitTag={true}
         />
 
         <button type="submit" className="btn-submit">

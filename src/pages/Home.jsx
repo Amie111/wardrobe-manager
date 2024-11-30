@@ -1,15 +1,31 @@
 import React, { useState, useEffect } from "react";
+import { clothingItems } from "../store/data";
+import { initializeData } from "../store/data";
+import { categories } from "../config/config";
 import ClothingGrid from "../components/ClothingGrid";
 import { X } from "lucide-react";
-import { clothingItems } from "../store/data";
-import { categories } from "../config/config";
 
 const Home = () => {
+  const [isLoading, setIsLoading] = useState(true);
   const [selectedCategories, setSelectedCategories] = useState(new Set());
   const [selectedTags, setSelectedTags] = useState(new Set());
 
+  // 初始化数据
   useEffect(() => {
-    // 监听类别筛选事件
+    const loadData = async () => {
+      try {
+        await initializeData();
+        setIsLoading(false);
+      } catch (error) {
+        console.error("加载数据失败:", error);
+        setIsLoading(false);
+      }
+    };
+    loadData();
+  }, []);
+
+  // 监听筛选事件
+  useEffect(() => {
     const handleCategoryFilter = (e) => {
       const categoryId = e.detail;
       setSelectedCategories((prev) => {
@@ -80,39 +96,45 @@ const Home = () => {
 
   return (
     <div>
-      {/* 显示当前筛选状态 */}
-      {(selectedCategories.size > 0 || selectedTags.size > 0) && (
-        <div className="filter-status">
-          <div className="filter-tags">
-            {Array.from(selectedCategories).map((categoryId) => (
-              <span key={categoryId} className="active-filter">
-                {categories.find((c) => c.id === categoryId)?.label}
-                <button
-                  onClick={() => handleRemoveFilter("category", categoryId)}
-                  className="remove-filter-btn"
-                >
-                  <X size={14} />
-                </button>
-              </span>
-            ))}
-            {Array.from(selectedTags).map((tag) => (
-              <span key={tag} className="active-filter">
-                {tag}
-                <button
-                  onClick={() => handleRemoveFilter("tag", tag)}
-                  className="remove-filter-btn"
-                >
-                  <X size={14} />
-                </button>
-              </span>
-            ))}
-          </div>
-          <button className="clear-filter" onClick={clearAllFilters}>
-            清除筛选
-          </button>
-        </div>
+      {isLoading ? (
+        <div className="loading-state">加载中...</div>
+      ) : (
+        <>
+          {/* 显示当前筛选状态 */}
+          {(selectedCategories.size > 0 || selectedTags.size > 0) && (
+            <div className="filter-status">
+              <div className="filter-tags">
+                {Array.from(selectedCategories).map((categoryId) => (
+                  <span key={categoryId} className="active-filter">
+                    {categories.find((c) => c.id === categoryId)?.label}
+                    <button
+                      onClick={() => handleRemoveFilter("category", categoryId)}
+                      className="remove-filter-btn"
+                    >
+                      <X size={14} />
+                    </button>
+                  </span>
+                ))}
+                {Array.from(selectedTags).map((tag) => (
+                  <span key={tag} className="active-filter">
+                    {tag}
+                    <button
+                      onClick={() => handleRemoveFilter("tag", tag)}
+                      className="remove-filter-btn"
+                    >
+                      <X size={14} />
+                    </button>
+                  </span>
+                ))}
+              </div>
+              <button className="clear-filter" onClick={clearAllFilters}>
+                清除筛选
+              </button>
+            </div>
+          )}
+          <ClothingGrid items={filteredItems} />
+        </>
       )}
-      <ClothingGrid items={filteredItems} />
     </div>
   );
 };
