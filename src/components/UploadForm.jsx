@@ -1,22 +1,20 @@
 import React, { useState } from "react";
-import { categories } from "../config/config";
 import { addClothingItem } from "../store/data";
 import { useNavigate } from "react-router-dom";
-import TagInput from "./TagInput";
 import ImageUpload from "./ImageUpload";
+import TagInput from "./TagInput";
+import { categories } from "../config/config";
 
 const UploadForm = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [tags, setTags] = useState([]);
-  const [newTag, setNewTag] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState(""); // 添加类别状态
+  const [selectedCategory, setSelectedCategory] = useState("");
   const navigate = useNavigate(); // 添加 useNavigate hook
 
   // 处理表单提交
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Implement upload logic
     if (!selectedFile || !selectedCategory || tags.length === 0) {
       alert("请填写所有必要信息");
       return;
@@ -32,12 +30,10 @@ const UploadForm = () => {
 
       // 等待上传完成
       await addClothingItem(newItem);
-
       // 重置表单
       setSelectedFile(null);
       setPreview(null);
       setTags([]);
-      setNewTag("");
       setSelectedCategory("");
 
       alert("衣物添加成功");
@@ -74,12 +70,7 @@ const UploadForm = () => {
             ))}
           </select>
         </div>
-        <TagInput
-          tags={tags}
-          setTags={setTags}
-          newTag={newTag}
-          setNewTag={setNewTag}
-        />
+        <TagInput tags={tags} setTags={setTags} />
 
         <button type="submit" className="btn-submit">
           保存

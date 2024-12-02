@@ -1,46 +1,21 @@
 import React, { useState, useEffect, useRef } from "react";
 import { X } from "lucide-react";
-import { allTags, addOutfitTag, outfitTags, addTag } from "../store/data";
 
-const TagInput = ({
-  tags,
-  setTags,
-  newTag,
-  setNewTag,
-  isOutfitTag = false,
-  tagType = "custom",
-}) => {
+const TagInput = ({ tags, setTags, isOutfitTag = false }) => {
+  const [newTag, setNewTag] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const inputRef = useRef(null);
   const suggestionsRef = useRef(null);
 
-  // 根据类型选择标签列表
-  const tagsList = isOutfitTag ? outfitTags : allTags;
-
   // 添加标签
-  const handleAddTag = async (tagToAdd = newTag) => {
+  const handleAddTag = (tagToAdd = newTag) => {
     const trimmedTag = tagToAdd.trim();
     if (trimmedTag && !tags.includes(trimmedTag)) {
-      try {
-        // 根据是否为穿搭标签选择不同的添加函数
-        const savedTag = isOutfitTag
-          ? await addOutfitTag({
-              name: trimmedTag,
-              type: tagType,
-              scene: "outfit",
-            })
-          : await addTag(trimmedTag);
-
-        if (savedTag && savedTag.name) {
-          setTags([...tags, savedTag.name]);
-          setNewTag("");
-          setSuggestions([]);
-          setShowSuggestions(false);
-        }
-      } catch (error) {
-        console.error("添加标签失败:", error);
-      }
+      setTags([...tags, trimmedTag]);
+      setNewTag("");
+      setSuggestions([]);
+      setShowSuggestions(false);
     }
   };
 
@@ -58,7 +33,7 @@ const TagInput = ({
 
     // 搜索匹配的标签
     if (value.trim()) {
-      const matchedTags = tagsList.filter(
+      const matchedTags = tags.filter(
         (tag) =>
           tag &&
           tag.toLowerCase().includes(value.toLowerCase()) &&
@@ -108,7 +83,9 @@ const TagInput = ({
 
   return (
     <div className="tag-input-container">
-      <label className="form-label">标签</label>
+      <label className="form-label">
+        {isOutfitTag ? "穿搭标签" : "衣物标签"}
+      </label>
       <div className="tag-list">
         {tags.map((tag, index) => (
           <span key={index} className="tag">

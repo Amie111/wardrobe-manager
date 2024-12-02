@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Home, Shirt, PlusCircle } from "lucide-react";
 import { categories } from "../config/config";
-import { allTags } from "../store/data";
+import { clothingItems } from "../store/data";
 
 const Layout = ({ children }) => {
   // 添加 useNavigate hook
@@ -105,13 +105,13 @@ const Layout = ({ children }) => {
           </nav>
 
           <div className="tags-filter-container">
-            {allTags.map((tag, index) => (
+            {clothingItems.map((item) => (
               <button
-                key={index}
+                key={item.id}
                 className="tag-filter"
-                onClick={() => handleTagClick(tag)}
+                onClick={() => handleTagClick(item.tags)}
               >
-                {tag}
+                {item.tags}
               </button>
             ))}
           </div>

@@ -1,5 +1,4 @@
 import React from "react";
-import { getOutfitItems } from "../store/data";
 
 const OutfitGrid = ({ outfits = [] }) => {
   return (
@@ -8,19 +7,19 @@ const OutfitGrid = ({ outfits = [] }) => {
         <div key={outfit.id} className="outfit-card">
           {/* 穿搭照片展示 */}
           <div className="outfit-photo-container">
-            {outfit.photo ? (
+            {outfit.image_urls?.length > 0 ? (
               <img
-                src={outfit.photo}
+                src={outfit.image_urls[0]}
                 alt={outfit.name}
                 className="outfit-photo"
               />
             ) : (
               <div className="outfit-items-grid">
-                {getOutfitItems(outfit.id).map((item) => (
+                {outfit.outfit_clothing?.map((relation) => (
                   <img
-                    key={item.id}
-                    src={item.imageUrl}
-                    alt={`服装${item.id}`}
+                    key={relation.clothing.id}
+                    src={relation.clothing.image_url}
+                    alt={`服装${relation.clothing.id}`}
                     className="outfit-item-photo"
                   />
                 ))}
@@ -31,9 +30,6 @@ const OutfitGrid = ({ outfits = [] }) => {
           {/* 穿搭信息 */}
           <div className="outfit-info">
             <h3 className="outfit-name">{outfit.name}</h3>
-            {outfit.description && (
-              <p className="outfit-description">{outfit.description}</p>
-            )}
             <div className="tag-container">
               {outfit.tags?.map((tag, index) => (
                 <span key={index} className="tag">

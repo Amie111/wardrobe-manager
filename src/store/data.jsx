@@ -1,13 +1,11 @@
-import { clothingAPI, outfitAPI, tagAPI, outfitTagAPI } from "../services/api";
+import { supabase } from "../config/supabase";
 
 // 声明状态变量
 let clothingItems = [];
 let outfits = [];
-let allTags = [];
-let outfitTags = [];
 
-// 其他现有的导出
-export { clothingItems, outfits, allTags, outfitTags };
+// 导出
+export { clothingItems, outfits };
 
 // 上传图片到 Cloudinary
 const uploadToCloudinary = async (file) => {
@@ -31,7 +29,6 @@ const uploadToCloudinary = async (file) => {
 
     if (!response.ok) {
       const errorData = await response.json();
-      console.error("Cloudinary 响应:", errorData);
       throw new Error(`上传失败: ${errorData.error?.message || "未知错误"}`);
     }
 
@@ -46,28 +43,17 @@ const uploadToCloudinary = async (file) => {
 // 初始化数据
 export const initializeData = async () => {
   try {
-    const [clothesResponse, outfitsResponse, tagsResponse, outfitTagsResponse] =
-      await Promise.allSettled([
-        clothingAPI.getAll(),
-        outfitAPI.getAll(),
-        tagAPI.getAll(),
-        outfitTagAPI.getAll(),
-      ]);
+    const [clothesResponse, outfitsResponse] = await Promise.all([
+      supabase.from("clothing").select("*"),
+      supabase.from("outfits").select("*"),
+    ]);
+    if (clothesResponse.error || outfitsResponse.error) {
+      throw new Error("获取数据失败");
+    }
 
-    // 正确处理 Promise.allSettled 的结果
-    clothingItems =
-      clothesResponse.status === "fulfilled" ? clothesResponse.value : [];
-    outfits =
-      outfitsResponse.status === "fulfilled" ? outfitsResponse.value : [];
-    allTags =
-      Array.isArray(tagsResponse.value) && tagsResponse.status === "fulfilled"
-        ? tagsResponse.value.map((tag) => tag?.name).filter(Boolean)
-        : [];
-    outfitTags =
-      Array.isArray(outfitTagsResponse.value) &&
-      outfitTagsResponse.status === "fulfilled"
-        ? outfitTagsResponse.value.map((tag) => tag?.name).filter(Boolean)
-        : [];
+    // 处理 Promise.all的response结果
+    clothingItems = clothesResponse.data;
+    outfits = outfitsResponse.data;
 
     // 触发更新事件
     window.dispatchEvent(new CustomEvent("dataUpdated"));
@@ -85,54 +71,24 @@ export const addClothingItem = async (item) => {
 
     // 创建新的衣物数据
     const newItem = {
-      imageUrl,
+      image_url: imageUrl,
       category: item.category,
       tags: item.tags,
     };
 
     // 保存到后端
-    const savedItem = await clothingAPI.add(newItem);
-    if (savedItem) {
-      clothingItems = [...clothingItems, savedItem];
-      // 触发更新事件
-      window.dispatchEvent(new CustomEvent("dataUpdated"));
-      return savedItem;
-    }
-    throw new Error("保存衣物失败");
+    const { data, error } = await supabase
+      .from("clothing")
+      .insert([newItem])
+      .select();
+
+    if (error) throw error;
+
+    clothingItems = [...clothingItems, data[0]];
+    // 触发更新事件
+    window.dispatchEvent(new CustomEvent("dataUpdated"));
   } catch (error) {
     console.error("添加衣物失败:", error);
-    throw error;
-  }
-};
-
-// 添加标签
-export const addTag = async (tagName) => {
-  try {
-    const savedTag = await tagAPI.add(tagName);
-    if (savedTag && savedTag.name) {
-      allTags = [...allTags, savedTag.name];
-      window.dispatchEvent(new CustomEvent("tagsUpdated"));
-      return savedTag;
-    }
-    throw new Error("保存标签失败");
-  } catch (error) {
-    console.error("添加标签失败:", error);
-    throw error;
-  }
-};
-
-// 添加穿搭标签
-export const addOutfitTag = async (tagData) => {
-  try {
-    const savedTag = await outfitTagAPI.add(tagData);
-    if (savedTag && savedTag.name) {
-      outfitTags = [...outfitTags, savedTag.name];
-      window.dispatchEvent(new CustomEvent("outfitTagsUpdated"));
-      return savedTag;
-    }
-    throw new Error("保存穿搭标签失败");
-  } catch (error) {
-    console.error("添加穿搭标签失败:", error);
     throw error;
   }
 };
@@ -140,25 +96,42 @@ export const addOutfitTag = async (tagData) => {
 // 添加穿搭
 export const addOutfit = async (outfit) => {
   try {
-    let photoUrl = null;
+    let imageUrls = [];
     if (outfit.photo) {
-      photoUrl = await uploadToCloudinary(outfit.photo);
+      const photoUrl = await uploadToCloudinary(outfit.photo);
+      imageUrls.push(photoUrl);
     }
 
     const outfitData = {
       name: outfit.name,
-      items: outfit.items,
-      tags: outfit.tags,
-      photo: photoUrl,
+      clothing_ids: outfit.items,
+      image_urls: imageUrls,
+      tags: outfit.tags || [],
     };
 
-    const savedOutfit = await outfitAPI.add(outfitData);
-    if (savedOutfit) {
-      outfits = [...outfits, savedOutfit];
-      window.dispatchEvent(new CustomEvent("dataUpdated"));
-      return savedOutfit;
+    const { data: newOutfit, error: outfitError } = await supabase
+      .from("oufits")
+      .insert([outfitData])
+      .select();
+    if (outfitError) throw outfitError;
+
+    // 添加outfit_clothing关联
+    if (outfit.items && outfit.items.length > 0) {
+      const relationships = outfit.items.map((itemId) => ({
+        outfit_id: newOutfit[0].id,
+        clothing_id: itemId,
+      }));
+
+      const { error: relationError } = await supabase
+        .from("outfit_clothing")
+        .insert(relationships);
+
+      if (relationError) throw relationError;
     }
-    throw new Error("保存穿搭失败");
+
+    outfits = [...outfits, newOutfit[0]];
+    // 触发更新事件
+    window.dispatchEvent(new CustomEvent("dataUpdated"));
   } catch (error) {
     console.error("添加穿搭失败:", error);
     throw error;
@@ -166,10 +139,17 @@ export const addOutfit = async (outfit) => {
 };
 
 // 获取穿搭组合中所有的衣物
-export const getOutfitItems = (outfitId) => {
-  const outfit = outfits.find((outfit) => outfit.id === outfitId);
-  if (!outfit) return [];
-  return outfit.items.map((itemId) =>
-    clothingItems.find((item) => item.id === itemId)
-  );
+export const getOutfitItems = async (outfitId) => {
+  try {
+    const { data, error } = await supabase
+      .from("outfit_clothing")
+      .select("clothing(*)")
+      .eq("outfit_id", outfitId);
+    if (error) throw error;
+
+    return data.map((item) => item.clothing);
+  } catch (error) {
+    console.error("获取穿搭衣物失败:", error);
+    return [];
+  }
 };
