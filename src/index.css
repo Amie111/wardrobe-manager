@@ -382,4 +382,90 @@
   .tag-remove-icon {
     @apply w-3.5 h-3.5;
   }
+
+  .home-container {
+    @apply w-full max-w-7xl mx-auto p-4;
+  }
+
+  .tab-header {
+    @apply flex gap-4 mb-6 border-b;
+  }
+
+  .tab-btn {
+    @apply flex-1 px-3 py-2 text-lg font-medium text-gray-600 hover:text-gray-900 border-b-2 border-transparent;
+  }
+
+  .tab-btn.active {
+    @apply text-blue-600 border-blue-600;
+  }
+
+  .filter-area {
+    @apply mb-6 space-y-4;
+  }
+
+  .category-filters {
+    @apply flex flex-wrap gap-2;
+  }
+
+  .tag-filters {
+    @apply flex flex-wrap gap-2;
+  }
+
+  .category-btn,
+  .tag-btn {
+    @apply px-3 py-1 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200;
+  }
+
+  .category-btn.active,
+  .tag-btn.active {
+    @apply bg-blue-100 text-blue-600;
+  }
+
+  /* 分类区域样式 */
+  .category-section {
+    @apply mb-4;
+  }
+
+  .category-filters {
+    @apply flex flex-wrap gap-2;
+  }
+
+  .category-btn {
+    @apply px-4 py-2 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 
+           flex items-center gap-2 transition-colors duration-200;
+  }
+
+  .category-btn.active {
+    @apply bg-blue-600 text-white;
+  }
+
+  /* 标签区域样式 */
+  .tag-section {
+    @apply relative;
+  }
+
+  .tag-filters {
+    @apply flex flex-wrap gap-2;
+    max-height: 40px; /* 一行的高度 */
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out;
+  }
+
+  .tag-filters.expanded {
+    max-height: 1000px; /* 足够大的高度以显示所有内容 */
+  }
+
+  .tag-btn {
+    @apply px-3 py-1 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 
+           transition-colors duration-200 text-sm;
+  }
+
+  .tag-btn.active {
+    @apply bg-gray-200 text-gray-900;
+  }
+
+  .expand-tags-btn {
+    @apply text-sm text-gray-500 hover:text-gray-700 mt-2 
+           transition-colors duration-200;
+  }
 }
