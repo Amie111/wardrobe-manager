@@ -1,10 +1,25 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Home, Shirt, PlusCircle } from "lucide-react";
+import { initializeData } from "../store/data";
 
 const Layout = ({ children }) => {
   // 添加 useNavigate hook
   const navigate = useNavigate();
+
+  // 添加数据初始化
+  useEffect(() => {
+    initializeData();
+    // 添加数据更新事件监听
+    const handleDataUpdate = () => {
+      initializeData();
+    };
+    window.addEventListener("dataUpdated", handleDataUpdate);
+
+    return () => {
+      window.removeEventListener("dataUpdated", handleDataUpdate);
+    };
+  }, []);
 
   // 导航处理函数
   const handleAddClick = () => {

@@ -427,11 +427,11 @@
   }
 
   .category-filters {
-    @apply flex flex-wrap gap-2;
+    @apply flex flex-wrap gap-3;
   }
 
   .category-btn {
-    @apply px-4 py-2 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 
+    @apply px-4 py-2 rounded-lg bg-blue-50 text-gray-600 hover:bg-blue-100 
            flex items-center gap-2 transition-colors duration-200;
   }
 
@@ -467,5 +467,49 @@
   .expand-tags-btn {
     @apply text-sm text-gray-500 hover:text-gray-700 mt-2 
            transition-colors duration-200;
+  }
+
+  /* 删除图标 */
+  .delete-icon {
+    @apply icon-sm text-gray-500;
+  }
+
+  /* 无图片状态 */
+  .no-image {
+    @apply text-gray-400;
+  }
+
+  /* 衣物内容区域 */
+  .item-content {
+    @apply p-4;
+  }
+
+  /* 模态框相关样式 */
+  .modal-overlay {
+    @apply fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50;
+  }
+
+  .modal-content {
+    @apply bg-white p-6 rounded-lg shadow-xl;
+  }
+
+  .modal-title {
+    @apply text-lg font-medium mb-4;
+  }
+
+  .modal-text {
+    @apply text-gray-600 mb-6;
+  }
+
+  .modal-actions {
+    @apply flex justify-end gap-4;
+  }
+
+  .btn-cancel {
+    @apply px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-md;
+  }
+
+  .btn-delete {
+    @apply px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600;
   }
 }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ClothingGrid from "../components/ClothingGrid";
 import OutfitGrid from "../components/OutfitGrid";
 import { clothingItems, outfits } from "../store/data";
@@ -10,10 +10,22 @@ const Home = () => {
   const [selectedCategories, setSelectedCategories] = useState(new Set());
   const [selectedTags, setSelectedTags] = useState(new Set());
   const [isTagsExpanded, setIsTagsExpanded] = useState(false);
+  const [items, setItems] = useState(clothingItems);
+
+  useEffect(() => {
+    const handleDataUpdate = () => {
+      setItems(clothingItems);
+    };
+
+    window.addEventListener("dataUpdated", handleDataUpdate);
+    return () => {
+      window.removeEventListener("dataUpdated", handleDataUpdate);
+    };
+  }, []);
 
   // 获取所有衣物标签
   const allClothingTags = [
-    ...new Set(clothingItems.flatMap((item) => item.tags || [])),
+    ...new Set(items.flatMap((item) => item.tags || [])),
   ];
 
   // 获取所有穿搭标签
@@ -22,7 +34,7 @@ const Home = () => {
   ];
 
   // 筛选衣物
-  const filteredClothingItems = clothingItems.filter((item) => {
+  const filteredClothingItems = items.filter((item) => {
     const matchCategory =
       selectedCategories.size === 0 || selectedCategories.has(item.category);
     const matchTag =
