@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { X, Upload } from "lucide-react";
+import { X } from "lucide-react";
 import { clothingItems, addOutfit } from "../store/data";
 import { useNavigate } from "react-router-dom";
 import TagInput from "../components/TagInput";
@@ -15,18 +15,19 @@ const CreateOutfit = () => {
   const [selectedFilterCategory, setSelectedFilterCategory] = useState("");
   const navigate = useNavigate();
 
-  const filreredClothingItems = selectedFilterCategory
+  const filteredClothingItems = selectedFilterCategory
     ? clothingItems.filter((item) => item.category === selectedFilterCategory)
     : clothingItems;
 
   // 处理衣物选择
   const handleItemSelect = (item) => {
-    if (selectedItems.find((i) => i.id !== item.id)) {
+    if (!selectedItems.find((i) => i.id === item.id)) {
       setSelectedItems([...selectedItems, item]);
     } else {
       setSelectedItems(selectedItems.filter((i) => i.id !== item.id));
     }
   };
+
   // 处理表单提交
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -34,14 +35,15 @@ const CreateOutfit = () => {
       alert("请填写穿搭名称并选择至少一件衣物");
       return;
     }
+
     try {
       const newOutfit = {
         name: outfitName,
         items: selectedItems.map((item) => item.id),
         tags: tags,
-        photo: preview,
+        photo: photo,
       };
-      addOutfit(newOutfit);
+      await addOutfit(newOutfit);
       alert("穿搭创建成功！");
       navigate("/outfits");
     } catch (error) {
@@ -78,16 +80,15 @@ const CreateOutfit = () => {
             <option value="">所有类别</option>
             {categories.map((category) => (
               <option key={category.id} value={category.id}>
-                {category.icon}
-                {category.label}
+                {category.icon} {category.label}
               </option>
             ))}
           </select>
 
           {/* 可选衣物网格 */}
           <div className="outfit-items-grid">
-            {filreredClothingItems.length > 0 ? (
-              filreredClothingItems.map((item) => (
+            {filteredClothingItems.length > 0 ? (
+              filteredClothingItems.map((item) => (
                 <div
                   key={item.id}
                   className={`outfit-item-card ${
@@ -117,7 +118,7 @@ const CreateOutfit = () => {
           </div>
         </div>
 
-        {/* 添加已选衣物预览区域 */}
+        {/* 搭配预览区域 */}
         {selectedItems.length > 0 && (
           <div className="selected-preview-container">
             <h3 className="selected-preview-title">已选衣物</h3>
