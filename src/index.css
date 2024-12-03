@@ -404,9 +404,8 @@
     @apply px-3 py-1 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200;
   }
 
-  .category-btn.active,
   .tag-btn.active {
-    @apply bg-blue-100 text-blue-600;
+    @apply bg-blue-50 text-blue-600;
   }
 
   /* 分类区域样式 */
@@ -424,7 +423,7 @@
   }
 
   .category-btn.active {
-    @apply bg-blue-600 text-white;
+    @apply bg-gray-400 text-white;
   }
 
   /* 标签区域样式 */

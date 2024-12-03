@@ -35,11 +35,20 @@ const Home = () => {
 
   // 筛选衣物
   const filteredClothingItems = items.filter((item) => {
+    // 如果没有选择任何筛选条件，显示所有衣物
+    if (selectedCategories.size === 0 && selectedTags.size === 0) {
+      return true;
+    }
+    // 检查类别匹配
     const matchCategory =
       selectedCategories.size === 0 || selectedCategories.has(item.category);
+    // 检查标签匹配
     const matchTag =
       selectedTags.size === 0 ||
-      (item.tags || []).some((tag) => selectedTags.has(tag));
+      (item.tags &&
+        selectedTags.size > 0 &&
+        Array.from(selectedTags).every((tag) => item.tags.includes(tag)));
+    // 同时满足类别和标签条件
     return matchCategory && matchTag;
   });
 
