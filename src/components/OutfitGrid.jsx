@@ -1,6 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
+import { X } from "lucide-react";
+import { deleteOutfit } from "../store/data";
 
 const OutfitGrid = ({ outfits = [] }) => {
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
+  const handleDelete = async (id) => {
+    setSelectedId(id);
+    setShowConfirm(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await deleteOutfit(selectedId);
+      setShowConfirm(false);
+      setSelectedId(null);
+    } catch (error) {
+      alert("删除失败，请重试");
+    }
+  };
+
   return (
     <div className="grid-layout">
       {outfits.map((outfit) => (
@@ -44,6 +63,12 @@ const OutfitGrid = ({ outfits = [] }) => {
                 </div>
               )}
             </div>
+            <button
+              onClick={() => handleDelete(outfit.id)}
+              className="delete-btn"
+            >
+              <X className="delete-icon" />
+            </button>
           </div>
           <div className="item-content">
             <h3 className="outfit-title">{outfit.name}</h3>
@@ -60,6 +85,26 @@ const OutfitGrid = ({ outfits = [] }) => {
 
       {outfits.length === 0 && (
         <div className="empty-state">还没有创建任何穿搭...</div>
+      )}
+      {/* 确认删除对话框 */}
+      {showConfirm && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3 className="modal-title">确认删除</h3>
+            <p className="modal-text">确定要删除这套穿搭吗？此操作无法撤销。</p>
+            <div className="modal-actions">
+              <button
+                onClick={() => setShowConfirm(false)}
+                className="btn-cancel"
+              >
+                取消
+              </button>
+              <button onClick={confirmDelete} className="btn-delete">
+                删除
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

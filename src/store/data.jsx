@@ -192,3 +192,20 @@ export const deleteClothingItem = async (id) => {
     throw error;
   }
 };
+
+// 删除穿搭
+export const deleteOutfit = async (id) => {
+  try {
+    const { error } = await supabase.from("outfits").delete().eq("id", id);
+
+    if (error) throw error;
+
+    // 更新本地状态
+    outfits = outfits.filter((item) => item.id !== id);
+    // 触发更新事件
+    window.dispatchEvent(new CustomEvent("dataUpdated"));
+  } catch (error) {
+    console.error("删除穿搭失败:", error);
+    throw error;
+  }
+};
