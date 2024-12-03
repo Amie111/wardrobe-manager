@@ -108,13 +108,13 @@ const Home = () => {
           className={`tab-btn ${activeTab === "clothing" ? "active" : ""}`}
           onClick={() => setActiveTab("clothing")}
         >
-          衣物
+          Clothings
         </button>
         <button
           className={`tab-btn ${activeTab === "outfits" ? "active" : ""}`}
           onClick={() => setActiveTab("outfits")}
         >
-          穿搭
+          Outfits
         </button>
       </div>
 

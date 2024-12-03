@@ -42,7 +42,7 @@ const Layout = ({ children }) => {
           <div className="flex-between">
             <button onClick={handleHomeClick} className="btn-secondary">
               <Home className="icon-lg" />
-              <span className="text-title">我的衣橱</span>
+              <span className="text-title">AMIE'S CLOSET</span>
             </button>
             <div className="flex space-x-2">
               <button className="btn-primary" onClick={handleCreateOutfitClick}>

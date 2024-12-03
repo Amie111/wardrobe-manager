@@ -23,7 +23,7 @@
 
   /* 按钮相关 */
   .btn-primary {
-    @apply flex items-center px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600;
+    @apply flex items-center px-4 py-2 bg-indigo-50 text-gray-700 rounded-md hover:bg-indigo-200;
   }
 
   .btn-secondary {
@@ -49,7 +49,7 @@
 
   /* 标签相关 */
   .tag {
-    @apply inline-flex items-center px-2 py-1 rounded-full text-sm bg-blue-100 text-blue-700;
+    @apply inline-flex items-center px-2 py-1 rounded-full text-sm bg-indigo-50 text-gray-700;
   }
 
   .tag-container {
@@ -245,35 +245,23 @@
 
   /* 穿搭卡片相关 */
   .outfit-card {
-    @apply bg-white rounded-lg shadow-md overflow-hidden;
+    @apply relative aspect-square bg-white rounded-lg shadow-md overflow-hidden;
   }
 
-  .outfit-photo-container {
-    @apply relative aspect-square;
+  .outfit-items-preview {
+    @apply w-full h-full grid grid-cols-2 gap-0.5;
   }
 
-  .outfit-photo {
+  .outfit-item-preview {
     @apply w-full h-full object-cover;
   }
 
-  .outfit-items-grid {
-    @apply grid grid-cols-2 gap-1 p-1;
+  .outfit-item-preview.empty {
+    @apply bg-gray-100;
   }
 
-  .outfit-item-photo {
-    @apply w-full aspect-square object-cover rounded-md;
-  }
-
-  .outfit-info {
-    @apply p-4;
-  }
-
-  .outfit-name {
-    @apply text-lg font-semibold mb-2;
-  }
-
-  .outfit-description {
-    @apply text-sm text-gray-600 mb-3;
+  .outfit-title {
+    @apply text-lg font-semibold mb-2 truncate;
   }
 
   .page-header {

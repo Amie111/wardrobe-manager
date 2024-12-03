@@ -4,32 +4,49 @@ const OutfitGrid = ({ outfits = [] }) => {
   return (
     <div className="grid-layout">
       {outfits.map((outfit) => (
-        <div key={outfit.id} className="outfit-card">
-          {/* 穿搭照片展示 */}
-          <div className="outfit-photo-container">
-            {outfit.image_urls?.length > 0 ? (
-              <img
-                src={outfit.image_urls[0]}
-                alt={outfit.name}
-                className="outfit-photo"
-              />
-            ) : (
-              <div className="outfit-items-grid">
-                {outfit.outfit_clothing?.map((relation) => (
-                  <img
-                    key={relation.clothing.id}
-                    src={relation.clothing.image_url}
-                    alt={`服装${relation.clothing.id}`}
-                    className="outfit-item-photo"
-                  />
-                ))}
-              </div>
-            )}
+        <div key={outfit.id} className="grid-item">
+          <div className="img-container">
+            <div className="img-wrapper">
+              {outfit.image_urls?.length > 0 ? (
+                // 如果有上传的穿搭照片就显示照片
+                <img
+                  src={outfit.image_urls[0]}
+                  alt={outfit.name}
+                  className="img-full"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = "https://placehold.co/300x300?text=No+Image";
+                  }}
+                />
+              ) : (
+                // 否则显示2x2网格的衣物预览
+                <div className="outfit-items-preview">
+                  {outfit.outfit_clothing?.slice(0, 4).map((relation) => (
+                    <img
+                      key={relation.clothing.id}
+                      src={relation.clothing.image_url}
+                      alt={`服装${relation.clothing.id}`}
+                      className="outfit-item-preview"
+                    />
+                  ))}
+                  {/* 如果衣物不足4件,用空白填充 */}
+                  {Array.from({
+                    length: Math.max(
+                      0,
+                      4 - (outfit.outfit_clothing?.length || 0)
+                    ),
+                  }).map((_, index) => (
+                    <div
+                      key={`empty-${index}`}
+                      className="outfit-item-preview empty"
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
-
-          {/* 穿搭信息 */}
-          <div className="outfit-info">
-            <h3 className="outfit-name">{outfit.name}</h3>
+          <div className="item-content">
+            <h3 className="outfit-title">{outfit.name}</h3>
             <div className="tag-container">
               {outfit.tags?.map((tag, index) => (
                 <span key={index} className="tag">

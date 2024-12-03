@@ -45,8 +45,14 @@ export const initializeData = async () => {
   try {
     const [clothesResponse, outfitsResponse] = await Promise.all([
       supabase.from("clothing").select("*"),
-      supabase.from("outfits").select("*"),
+      supabase.from("outfits").select(`
+        *,
+        outfit_clothing (
+          clothing (*)
+        )
+      `),
     ]);
+
     if (clothesResponse.error || outfitsResponse.error) {
       throw new Error("获取数据失败");
     }
@@ -104,13 +110,12 @@ export const addOutfit = async (outfit) => {
 
     const outfitData = {
       name: outfit.name,
-      clothing_ids: outfit.items,
       image_urls: imageUrls,
       tags: outfit.tags || [],
     };
 
     const { data: newOutfit, error: outfitError } = await supabase
-      .from("oufits")
+      .from("outfits")
       .insert([outfitData])
       .select();
     if (outfitError) throw outfitError;
@@ -129,9 +134,26 @@ export const addOutfit = async (outfit) => {
       if (relationError) throw relationError;
     }
 
-    outfits = [...outfits, newOutfit[0]];
-    // 触发更新事件
+    // 获取完整的outfit数据(包括关联的clothing)
+    const { data: completeOutfit, error: fetchError } = await supabase
+      .from("outfits")
+      .select(
+        `
+        *,
+        outfit_clothing (
+          clothing (*)
+        )
+      `
+      )
+      .eq("id", newOutfit[0].id)
+      .single();
+
+    if (fetchError) throw fetchError;
+
+    // 触发事件让 Layout 组件重新获取数据
     window.dispatchEvent(new CustomEvent("dataUpdated"));
+
+    return completeOutfit;
   } catch (error) {
     console.error("添加穿搭失败:", error);
     throw error;
