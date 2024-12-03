@@ -1,74 +1,155 @@
-// 存储所有衣物数据
-export let clothingItems = [
-  {
-    id: "1",
-    imageUrl: "https://placehold.co/300x300?text=Summer+Casual",
-    tags: ["夏季", "休闲"],
-    category: "tops",
-  },
-  {
-    id: "2",
-    imageUrl: "https://placehold.co/300x300?text=Spring+Formal",
-    tags: ["春秋", "正装"],
-    category: "bottoms",
-  },
-];
+import { supabase } from "../config/supabase";
 
-// 存储所有标签
-export let allTags = ["所有", "最新", "夏季", "休闲", "春秋"];
+// 声明状态变量
+let clothingItems = [];
+let outfits = [];
 
-// 存储所有穿搭组合
-export let outfits = [
-  {
-    id: "1",
-    createdAt: new Date().toISOString().split("T")[0],
-    name: "藏蓝韩系穿搭",
-    items: ["1", "2"], // 引用现有衣物的 ID
-    tags: ["韩系", "休闲"],
-    photo: null, // 实际穿搭照片
-    category: "all",
-    description: "藏蓝韩系穿搭",
-  },
-];
+// 导出
+export { clothingItems, outfits };
 
-// 添加新的衣物
-export const addClothingItem = (item) => {
-  const newItem = {
-    ...item,
-    id: String(clothingItems.length + 1), // 简单的 ID 生成
-  };
-  clothingItems = [...clothingItems, newItem];
-  // 更新标签列表
-  const newTags = item.tags.filter((tag) => !allTags.includes(tag));
-  if (newTags.length > 0) {
-    allTags = [...allTags, ...newTags];
+// 上传图片到 Cloudinary
+const uploadToCloudinary = async (file) => {
+  try {
+    // 创建 FormData
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append(
+      "upload_preset",
+      process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET
+    );
+
+    // 上传图片
+    const response = await fetch(
+      `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`,
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(`上传失败: ${errorData.error?.message || "未知错误"}`);
+    }
+
+    const data = await response.json();
+    return data.secure_url; // 返回图片URL
+  } catch (error) {
+    console.error("上传图片失败:", error);
+    throw error;
   }
-
-  return newItem;
 };
 
-// 添加新的穿搭组合并返回新添加的穿搭组合
-export const addOutfit = (outfit) => {
-  const newOutfit = {
-    ...outfit,
-    id: String(outfits.length + 1),
-    createdAt: new Date().toISOString().split("T")[0],
-  };
-  outfits = [...outfits, newOutfit];
-  // 更新标签列表
-  const newTags = outfit.tags.filter((tag) => !allTags.includes(tag));
-  if (newTags.length > 0) {
-    allTags = [...allTags, ...newTags];
+// 初始化数据
+export const initializeData = async () => {
+  try {
+    const [clothesResponse, outfitsResponse] = await Promise.all([
+      supabase.from("clothing").select("*"),
+      supabase.from("outfits").select("*"),
+    ]);
+    if (clothesResponse.error || outfitsResponse.error) {
+      throw new Error("获取数据失败");
+    }
+
+    // 处理 Promise.all的response结果
+    clothingItems = clothesResponse.data;
+    outfits = outfitsResponse.data;
+
+    // 触发更新事件
+    window.dispatchEvent(new CustomEvent("dataUpdated"));
+  } catch (error) {
+    console.error("初始化数据失败:", error);
+    return false;
   }
-  return newOutfit;
+};
+
+// 添加衣物
+export const addClothingItem = async (item) => {
+  try {
+    // 先上传图片到 Cloudinary
+    const imageUrl = await uploadToCloudinary(item.file);
+
+    // 创建新的衣物数据
+    const newItem = {
+      image_url: imageUrl,
+      category: item.category,
+      tags: item.tags,
+    };
+
+    // 保存到后端
+    const { data, error } = await supabase
+      .from("clothing")
+      .insert([newItem])
+      .select();
+
+    if (error) throw error;
+
+    clothingItems = [...clothingItems, data[0]];
+    // 触发更新事件
+    window.dispatchEvent(new CustomEvent("dataUpdated"));
+  } catch (error) {
+    console.error("添加衣物失败:", error);
+    throw error;
+  }
+};
+
+// 添加穿搭
+export const addOutfit = async (outfit) => {
+  try {
+    let imageUrls = [];
+    if (outfit.photo) {
+      const photoUrl = await uploadToCloudinary(outfit.photo);
+      imageUrls.push(photoUrl);
+    }
+
+    const outfitData = {
+      name: outfit.name,
+      clothing_ids: outfit.items,
+      image_urls: imageUrls,
+      tags: outfit.tags || [],
+    };
+
+    const { data: newOutfit, error: outfitError } = await supabase
+      .from("oufits")
+      .insert([outfitData])
+      .select();
+    if (outfitError) throw outfitError;
+
+    // 添加outfit_clothing关联
+    if (outfit.items && outfit.items.length > 0) {
+      const relationships = outfit.items.map((itemId) => ({
+        outfit_id: newOutfit[0].id,
+        clothing_id: itemId,
+      }));
+
+      const { error: relationError } = await supabase
+        .from("outfit_clothing")
+        .insert(relationships);
+
+      if (relationError) throw relationError;
+    }
+
+    outfits = [...outfits, newOutfit[0]];
+    // 触发更新事件
+    window.dispatchEvent(new CustomEvent("dataUpdated"));
+  } catch (error) {
+    console.error("添加穿搭失败:", error);
+    throw error;
+  }
 };
 
 // 获取穿搭组合中所有的衣物
-export const getOutfitItems = (outfitId) => {
-  const outfit = outfits.find((outfit) => outfit.id === outfitId);
-  if (!outfit) return [];
+export const getOutfitItems = async (outfitId) => {
+  try {
+    const { data, error } = await supabase
+      .from("outfit_clothing")
+      .select("clothing(*)")
+      .eq("outfit_id", outfitId);
+    if (error) throw error;
 
-  return outfit.items.map((itemId) =>
-    clothingItems.find((item) => item.id === itemId)
-  );
+    return data.map((item) => item.clothing);
+  } catch (error) {
+    console.error("获取穿搭衣物失败:", error);
+    return [];
+  }
 };

@@ -1,0 +1,580 @@
+diff --git a/package-lock.json b/package-lock.json
+index 1d87ae3..1f086b0 100644
+--- a/package-lock.json
++++ b/package-lock.json
+@@ -11,10 +11,12 @@
+         "@cloudinary/react": "^1.13.1",
+         "@cloudinary/url-gen": "^1.21.0",
+         "@heroicons/react": "^2.2.0",
++        "@supabase/supabase-js": "^2.46.2",
+         "@testing-library/jest-dom": "^5.17.0",
+         "@testing-library/react": "^13.4.0",
+         "@testing-library/user-event": "^13.5.0",
+         "autoprefixer": "^10.4.20",
++        "dotenv": "^16.4.5",
+         "lucide-react": "^0.460.0",
+         "postcss": "^8.4.49",
+         "react": "^18.3.1",
+@@ -3736,6 +3738,112 @@
+         "@sinonjs/commons": "^1.7.0"
+       }
+     },
++    "node_modules/@supabase/auth-js": {
++      "version": "2.65.1",
++      "resolved": "https://registry.npmjs.org/@supabase/auth-js/-/auth-js-2.65.1.tgz",
++      "integrity": "sha512-IA7i2Xq2SWNCNMKxwmPlHafBQda0qtnFr8QnyyBr+KaSxoXXqEzFCnQ1dGTy6bsZjVBgXu++o3qrDypTspaAPw==",
++      "dependencies": {
++        "@supabase/node-fetch": "^2.6.14"
++      }
++    },
++    "node_modules/@supabase/functions-js": {
++      "version": "2.4.3",
++      "resolved": "https://registry.npmjs.org/@supabase/functions-js/-/functions-js-2.4.3.tgz",
++      "integrity": "sha512-sOLXy+mWRyu4LLv1onYydq+10mNRQ4rzqQxNhbrKLTLTcdcmS9hbWif0bGz/NavmiQfPs4ZcmQJp4WqOXlR4AQ==",
++      "dependencies": {
++        "@supabase/node-fetch": "^2.6.14"
++      }
++    },
++    "node_modules/@supabase/node-fetch": {
++      "version": "2.6.15",
++      "resolved": "https://registry.npmjs.org/@supabase/node-fetch/-/node-fetch-2.6.15.tgz",
++      "integrity": "sha512-1ibVeYUacxWYi9i0cf5efil6adJ9WRyZBLivgjs+AUpewx1F3xPi7gLgaASI2SmIQxPoCEjAsLAzKPgMJVgOUQ==",
++      "dependencies": {
++        "whatwg-url": "^5.0.0"
++      },
++      "engines": {
++        "node": "4.x || >=6.0.0"
++      }
++    },
++    "node_modules/@supabase/node-fetch/node_modules/tr46": {
++      "version": "0.0.3",
++      "resolved": "https://registry.npmjs.org/tr46/-/tr46-0.0.3.tgz",
++      "integrity": "sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw=="
++    },
++    "node_modules/@supabase/node-fetch/node_modules/webidl-conversions": {
++      "version": "3.0.1",
++      "resolved": "https://registry.npmjs.org/webidl-conversions/-/webidl-conversions-3.0.1.tgz",
++      "integrity": "sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ=="
++    },
++    "node_modules/@supabase/node-fetch/node_modules/whatwg-url": {
++      "version": "5.0.0",
++      "resolved": "https://registry.npmjs.org/whatwg-url/-/whatwg-url-5.0.0.tgz",
++      "integrity": "sha512-saE57nupxk6v3HY35+jzBwYa0rKSy0XR8JSxZPwgLr7ys0IBzhGviA1/TUGJLmSVqs8pb9AnvICXEuOHLprYTw==",
++      "dependencies": {
++        "tr46": "~0.0.3",
++        "webidl-conversions": "^3.0.0"
++      }
++    },
++    "node_modules/@supabase/postgrest-js": {
++      "version": "1.16.3",
++      "resolved": "https://registry.npmjs.org/@supabase/postgrest-js/-/postgrest-js-1.16.3.tgz",
++      "integrity": "sha512-HI6dsbW68AKlOPofUjDTaosiDBCtW4XAm0D18pPwxoW3zKOE2Ru13Z69Wuys9fd6iTpfDViNco5sgrtnP0666A==",
++      "dependencies": {
++        "@supabase/node-fetch": "^2.6.14"
++      }
++    },
++    "node_modules/@supabase/realtime-js": {
++      "version": "2.10.9",
++      "resolved": "https://registry.npmjs.org/@supabase/realtime-js/-/realtime-js-2.10.9.tgz",
++      "integrity": "sha512-0AjN65VDNIScZzrrPaVvlND4vbgVS+j9Wcy3zf7e+l9JY4IwCTahFenPLcKy9bkr7KY0wfB7MkipZPKxMaDnjw==",
++      "dependencies": {
++        "@supabase/node-fetch": "^2.6.14",
++        "@types/phoenix": "^1.5.4",
++        "@types/ws": "^8.5.10",
++        "ws": "^8.18.0"
++      }
++    },
++    "node_modules/@supabase/realtime-js/node_modules/ws": {
++      "version": "8.18.0",
++      "resolved": "https://registry.npmjs.org/ws/-/ws-8.18.0.tgz",
++      "integrity": "sha512-8VbfWfHLbbwu3+N6OKsOMpBdT4kXPDDB9cJk2bJ6mh9ucxdlnNvH1e+roYkKmN9Nxw2yjz7VzeO9oOz2zJ04Pw==",
++      "engines": {
++        "node": ">=10.0.0"
++      },
++      "peerDependencies": {
++        "bufferutil": "^4.0.1",
++        "utf-8-validate": ">=5.0.2"
++      },
++      "peerDependenciesMeta": {
++        "bufferutil": {
++          "optional": true
++        },
++        "utf-8-validate": {
++          "optional": true
++        }
++      }
++    },
++    "node_modules/@supabase/storage-js": {
++      "version": "2.7.1",
++      "resolved": "https://registry.npmjs.org/@supabase/storage-js/-/storage-js-2.7.1.tgz",
++      "integrity": "sha512-asYHcyDR1fKqrMpytAS1zjyEfvxuOIp1CIXX7ji4lHHcJKqyk+sLl/Vxgm4sN6u8zvuUtae9e4kDxQP2qrwWBA==",
++      "dependencies": {
++        "@supabase/node-fetch": "^2.6.14"
++      }
++    },
++    "node_modules/@supabase/supabase-js": {
++      "version": "2.46.2",
++      "resolved": "https://registry.npmjs.org/@supabase/supabase-js/-/supabase-js-2.46.2.tgz",
++      "integrity": "sha512-5FEzYMZhfIZrMWEqo5/dQincvrhM+DeMWH3/okeZrkBBW1AJxblOQhnhF4/dfNYK25oZ1O8dAnnxZ9gQqdr40w==",
++      "dependencies": {
++        "@supabase/auth-js": "2.65.1",
++        "@supabase/functions-js": "2.4.3",
++        "@supabase/node-fetch": "2.6.15",
++        "@supabase/postgrest-js": "1.16.3",
++        "@supabase/realtime-js": "2.10.9",
++        "@supabase/storage-js": "2.7.1"
++      }
++    },
+     "node_modules/@surma/rollup-plugin-off-main-thread": {
+       "version": "2.2.3",
+       "resolved": "https://registry.npmjs.org/@surma/rollup-plugin-off-main-thread/-/rollup-plugin-off-main-thread-2.2.3.tgz",
+@@ -4416,6 +4524,11 @@
+       "integrity": "sha512-dISoDXWWQwUquiKsyZ4Ng+HX2KsPL7LyHKHQwgGFEA3IaKac4Obd+h2a/a6waisAoepJlBcx9paWqjA8/HVjCw==",
+       "license": "MIT"
+     },
++    "node_modules/@types/phoenix": {
++      "version": "1.6.6",
++      "resolved": "https://registry.npmjs.org/@types/phoenix/-/phoenix-1.6.6.tgz",
++      "integrity": "sha512-PIzZZlEppgrpoT2QgbnDU+MMzuR6BbCjllj0bM70lWoejMeNJAxCchxnv7J3XFkI8MpygtRpzXrIlmWUBclP5A=="
++    },
+     "node_modules/@types/prettier": {
+       "version": "2.7.3",
+       "resolved": "https://registry.npmjs.org/@types/prettier/-/prettier-2.7.3.tgz",
+@@ -7425,12 +7538,15 @@
+       }
+     },
+     "node_modules/dotenv": {
+-      "version": "10.0.0",
+-      "resolved": "https://registry.npmjs.org/dotenv/-/dotenv-10.0.0.tgz",
+-      "integrity": "sha512-rlBi9d8jpv9Sf1klPjNfFAuWDjKLwTIJJ/VxtoTwIR6hnZxcEOQCZg2oIL3MWBYw5GpUDKOEnND7LXTbIpQ03Q==",
++      "version": "16.4.5",
++      "resolved": "https://registry.npmjs.org/dotenv/-/dotenv-16.4.5.tgz",
++      "integrity": "sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==",
+       "license": "BSD-2-Clause",
+       "engines": {
+-        "node": ">=10"
++        "node": ">=12"
++      },
++      "funding": {
++        "url": "https://dotenvx.com"
+       }
+     },
+     "node_modules/dotenv-expand": {
+@@ -15738,6 +15854,15 @@
+         }
+       }
+     },
++    "node_modules/react-scripts/node_modules/dotenv": {
++      "version": "10.0.0",
++      "resolved": "https://registry.npmjs.org/dotenv/-/dotenv-10.0.0.tgz",
++      "integrity": "sha512-rlBi9d8jpv9Sf1klPjNfFAuWDjKLwTIJJ/VxtoTwIR6hnZxcEOQCZg2oIL3MWBYw5GpUDKOEnND7LXTbIpQ03Q==",
++      "license": "BSD-2-Clause",
++      "engines": {
++        "node": ">=10"
++      }
++    },
+     "node_modules/read-cache": {
+       "version": "1.0.0",
+       "resolved": "https://registry.npmjs.org/read-cache/-/read-cache-1.0.0.tgz",
+diff --git a/package.json b/package.json
+index 6ab3d67..6b9439d 100644
+--- a/package.json
++++ b/package.json
+@@ -2,14 +2,17 @@
+   "name": "closet-app",
+   "version": "0.1.0",
+   "private": true,
++  "type": "module",
+   "dependencies": {
+     "@cloudinary/react": "^1.13.1",
+     "@cloudinary/url-gen": "^1.21.0",
+     "@heroicons/react": "^2.2.0",
++    "@supabase/supabase-js": "^2.46.2",
+     "@testing-library/jest-dom": "^5.17.0",
+     "@testing-library/react": "^13.4.0",
+     "@testing-library/user-event": "^13.5.0",
+     "autoprefixer": "^10.4.20",
++    "dotenv": "^16.4.5",
+     "lucide-react": "^0.460.0",
+     "postcss": "^8.4.49",
+     "react": "^18.3.1",
+diff --git a/src/config/supabase.js b/src/config/supabase.js
+new file mode 100644
+index 0000000..9ccc0ef
+--- /dev/null
++++ b/src/config/supabase.js
+@@ -0,0 +1,10 @@
++import { createClient } from '@supabase/supabase-js';
++
++const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
++const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
++
++if (!supabaseUrl || !supabaseAnonKey) {
++  throw new Error('Missing Supabase environment variables');
++}
++
++export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+diff --git a/src/services/api.js b/src/services/api.js
+index 9a3d0e6..6fb0e66 100644
+--- a/src/services/api.js
++++ b/src/services/api.js
+@@ -1,115 +1,204 @@
+-const API_BASE_URL = "http://localhost:5001/api";
++import { supabase } from '../config/supabase';
+ 
+-// 统一的响应处理
+-const handleResponse = async (response) => {
+-  if (!response.ok) {
+-    const error = await response.json();
+-    throw new Error(error.message || "请求失败");
++// Clothing API
++export const getClothing = async () => {
++  const { data, error } = await supabase
++    .from('clothing')
++    .select('*')
++    .order('created_at', { ascending: false });
++  
++  if (error) throw error;
++  return data;
++};
++
++export const getClothingById = async (id) => {
++  const { data, error } = await supabase
++    .from('clothing')
++    .select('*')
++    .eq('id', id)
++    .single();
++  
++  if (error) throw error;
++  return data;
++};
++
++export const addClothing = async (clothingData) => {
++  const { data, error } = await supabase
++    .from('clothing')
++    .insert([clothingData])
++    .select();
++  
++  if (error) throw error;
++  return data[0];
++};
++
++export const updateClothing = async (id, clothingData) => {
++  const { data, error } = await supabase
++    .from('clothing')
++    .update(clothingData)
++    .eq('id', id)
++    .select();
++  
++  if (error) throw error;
++  return data[0];
++};
++
++export const deleteClothing = async (id) => {
++  const { error } = await supabase
++    .from('clothing')
++    .delete()
++    .eq('id', id);
++  
++  if (error) throw error;
++};
++
++// Outfits API
++export const getOutfits = async () => {
++  const { data, error } = await supabase
++    .from('outfits')
++    .select(`
++      *,
++      outfit_clothing (
++        clothing (*)
++      )
++    `)
++    .order('created_at', { ascending: false });
++  
++  if (error) throw error;
++  return data;
++};
++
++export const getOutfitById = async (id) => {
++  const { data, error } = await supabase
++    .from('outfits')
++    .select(`
++      *,
++      outfit_clothing (
++        clothing (*)
++      )
++    `)
++    .eq('id', id)
++    .single();
++  
++  if (error) throw error;
++  return data;
++};
++
++export const addOutfit = async (outfitData) => {
++  // Start a transaction by using single batch
++  const { data: outfit, error: outfitError } = await supabase
++    .from('outfits')
++    .insert([{
++      name: outfitData.name,
++      image_urls: outfitData.image_urls,
++      tags: outfitData.tags
++    }])
++    .select();
++
++  if (outfitError) throw outfitError;
++
++  // Add outfit-clothing relationships
++  if (outfitData.clothing_ids && outfitData.clothing_ids.length > 0) {
++    const relationships = outfitData.clothing_ids.map(clothing_id => ({
++      outfit_id: outfit[0].id,
++      clothing_id
++    }));
++
++    const { error: relationError } = await supabase
++      .from('outfit_clothing')
++      .insert(relationships);
++
++    if (relationError) throw relationError;
+   }
+-  // 返回 JSON 数据
+-  return response.json();
++
++  return outfit[0];
+ };
+ 
+-// 衣物相关的 API 调用
+-export const clothingAPI = {
+-  // 获取所有衣物
+-  getAll: async () => {
+-    try {
+-      const response = await fetch(`${API_BASE_URL}/clothing`);
+-      return handleResponse(response);
+-    } catch (error) {
+-      console.error("获取衣物失败:", error);
+-      return [];
++export const updateOutfit = async (id, outfitData) => {
++  // Update outfit details
++  const { data: outfit, error: outfitError } = await supabase
++    .from('outfits')
++    .update({
++      name: outfitData.name,
++      image_urls: outfitData.image_urls,
++      tags: outfitData.tags
++    })
++    .eq('id', id)
++    .select();
++
++  if (outfitError) throw outfitError;
++
++  // If clothing_ids are provided, update relationships
++  if (outfitData.clothing_ids) {
++    // Delete existing relationships
++    const { error: deleteError } = await supabase
++      .from('outfit_clothing')
++      .delete()
++      .eq('outfit_id', id);
++
++    if (deleteError) throw deleteError;
++
++    // Add new relationships
++    if (outfitData.clothing_ids.length > 0) {
++      const relationships = outfitData.clothing_ids.map(clothing_id => ({
++        outfit_id: id,
++        clothing_id
++      }));
++
++      const { error: relationError } = await supabase
++        .from('outfit_clothing')
++        .insert(relationships);
++
++      if (relationError) throw relationError;
+     }
+-  },
+-
+-  // 添加新衣物
+-  add: async (clothingData) => {
+-    const response = await fetch(`${API_BASE_URL}/clothing`, {
+-      method: "POST",
+-      headers: {
+-        "Content-Type": "application/json",
+-      },
+-      body: JSON.stringify(clothingData),
+-    });
+-    return handleResponse(response);
+-  },
++  }
++
++  return outfit[0];
+ };
+ 
+-// 标签相关的 API 调用
+-export const tagAPI = {
+-  // 获取所有标签
+-  getAll: async () => {
+-    try {
+-      const response = await fetch(`${API_BASE_URL}/tags`);
+-      return handleResponse(response);
+-    } catch (error) {
+-      console.error("获取标签失败:", error);
+-      return [];
+-    }
+-  },
+-
+-  // 添加新标签
+-  add: async (tagName) => {
+-    const response = await fetch(`${API_BASE_URL}/tags`, {
+-      method: "POST",
+-      headers: {
+-        "Content-Type": "application/json",
+-      },
+-      body: JSON.stringify({ name: tagName }),
+-    });
+-    return handleResponse(response);
+-  },
++export const deleteOutfit = async (id) => {
++  // The outfit_clothing relationships will be automatically deleted due to ON DELETE CASCADE
++  const { error } = await supabase
++    .from('outfits')
++    .delete()
++    .eq('id', id);
++  
++  if (error) throw error;
+ };
+ 
+-// 穿搭标签相关的 API 调用
+-export const outfitTagAPI = {
+-  // 获取所有穿搭标签
+-  getAll: async () => {
+-    try {
+-      const response = await fetch(`${API_BASE_URL}/outfit-tags`);
+-      return handleResponse(response);
+-    } catch (error) {
+-      console.error("获取穿搭标签失败:", error);
+-      return [];
+-    }
+-  },
+-
+-  // 添加新穿搭标签
+-  add: async (tagData) => {
+-    const response = await fetch(`${API_BASE_URL}/outfit-tags`, {
+-      method: "POST",
+-      headers: {
+-        "Content-Type": "application/json",
+-      },
+-      body: JSON.stringify(tagData),
+-    });
+-    return handleResponse(response);
+-  },
++// Search and Filter Functions
++export const searchClothingByTags = async (tags) => {
++  const { data, error } = await supabase
++    .from('clothing')
++    .select('*')
++    .contains('tags', tags);
++  
++  if (error) throw error;
++  return data;
+ };
+ 
+-// 穿搭相关的 API 调用
+-export const outfitAPI = {
+-  // 获取所有穿搭
+-  getAll: async () => {
+-    try {
+-      const response = await fetch(`${API_BASE_URL}/outfits`);
+-      return handleResponse(response);
+-    } catch (error) {
+-      console.error("获取穿搭失败:", error);
+-      return [];
+-    }
+-  },
+-
+-  // 添加新穿搭
+-  add: async (outfitData) => {
+-    const response = await fetch(`${API_BASE_URL}/outfits`, {
+-      method: "POST",
+-      headers: {
+-        "Content-Type": "application/json",
+-      },
+-      body: JSON.stringify(outfitData),
+-    });
+-    return handleResponse(response);
+-  },
++export const searchOutfitsByTags = async (tags) => {
++  const { data, error } = await supabase
++    .from('outfits')
++    .select(`
++      *,
++      outfit_clothing (
++        clothing (*)
++      )
++    `)
++    .contains('tags', tags);
++  
++  if (error) throw error;
++  return data;
++};
++
++export const getClothingByCategory = async (category) => {
++  const { data, error } = await supabase
++    .from('clothing')
++    .select('*')
++    .eq('category', category)
++    .order('created_at', { ascending: false });
++  
++  if (error) throw error;
++  return data;
+ };
+diff --git a/src/services/supabase-test.js b/src/services/supabase-test.js
+new file mode 100644
+index 0000000..337305e
+--- /dev/null
++++ b/src/services/supabase-test.js
+@@ -0,0 +1,28 @@
++import { supabase } from '../config/supabase.js';
++
++const testSupabaseConnection = async () => {
++  try {
++    console.log('Testing Supabase connection...');
++    const { data, error } = await supabase
++      .from('clothing')
++      .select('*')
++      .limit(1);
++    
++    if (error) {
++      console.error('Supabase connection test failed:', error.message);
++      return false;
++    }
++    
++    console.log('Supabase connection successful!');
++    console.log('Test data:', data);
++    return true;
++  } catch (err) {
++    console.error('Supabase connection test failed:', err.message);
++    return false;
++  }
++};
++
++// Run the test
++testSupabaseConnection();
++
++export default testSupabaseConnection;
+diff --git a/test.js b/test.js
+new file mode 100644
+index 0000000..ae9ffe5
+--- /dev/null
++++ b/test.js
+@@ -0,0 +1,12 @@
++// Load environment variables
++import dotenv from 'dotenv';
++dotenv.config();
++
++// Import and run test
++import('./src/services/supabase-test.js').then(() => {
++  // Keep process alive for a moment to see results
++  setTimeout(() => process.exit(), 1000);
++}).catch(err => {
++  console.error('Failed to run test:', err);
++  process.exit(1);
++});

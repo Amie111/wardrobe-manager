@@ -7,9 +7,9 @@ const ClothingGrid = ({ items = [] }) => {
         <div key={item.id} className="grid-item">
           <div className="img-container">
             <div className="img-wrapper">
-              {item.imageUrl ? (
+              {item.image_url ? (
                 <img
-                  src={item.imageUrl}
+                  src={item.image_url}
                   alt={`Clothing item${item.title}`}
                   className="img-full"
                   onError={(e) => {

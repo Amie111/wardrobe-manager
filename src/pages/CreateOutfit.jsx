@@ -10,7 +10,6 @@ const CreateOutfit = () => {
   const [selectedItems, setSelectedItems] = useState([]);
   const [outfitName, setOutfitName] = useState("");
   const [tags, setTags] = useState([]);
-  const [newTag, setNewTag] = useState("");
   const [photo, setPhoto] = useState(null);
   const [preview, setPreview] = useState(null);
   const [selectedFilterCategory, setSelectedFilterCategory] = useState("");
@@ -22,28 +21,33 @@ const CreateOutfit = () => {
 
   // 处理衣物选择
   const handleItemSelect = (item) => {
-    if (selectedItems.find((i) => i.id === item.id)) {
-      setSelectedItems(selectedItems.filter((i) => i.id !== item.id));
-    } else {
+    if (selectedItems.find((i) => i.id !== item.id)) {
       setSelectedItems([...selectedItems, item]);
+    } else {
+      setSelectedItems(selectedItems.filter((i) => i.id !== item.id));
     }
   };
   // 处理表单提交
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!outfitName || selectedItems.length === 0) {
       alert("请填写穿搭名称并选择至少一件衣物");
       return;
     }
-    const newOutfit = {
-      name: outfitName,
-      items: selectedItems.map((item) => item.id),
-      tags: tags,
-      photo: preview,
-    };
-    addOutfit(newOutfit);
-    alert("穿搭创建成功！");
-    navigate("/outfits");
+    try {
+      const newOutfit = {
+        name: outfitName,
+        items: selectedItems.map((item) => item.id),
+        tags: tags,
+        photo: preview,
+      };
+      addOutfit(newOutfit);
+      alert("穿搭创建成功！");
+      navigate("/outfits");
+    } catch (error) {
+      alert("创建穿搭失败，请重试");
+      console.error("创建穿搭失败:", error);
+    }
   };
 
   return (
@@ -94,10 +98,17 @@ const CreateOutfit = () => {
                   onClick={() => handleItemSelect(item)}
                 >
                   <img
-                    src={item.imageUrl}
+                    src={item.image_url}
                     alt={`服装${item.id}`}
                     className="outfit-item-image"
                   />
+                  <div className="tag-container">
+                    {item.tags?.map((tag, index) => (
+                      <span key={index} className="tag">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               ))
             ) : (
@@ -114,7 +125,7 @@ const CreateOutfit = () => {
               {selectedItems.map((item) => (
                 <div key={item.id} className="selected-item-wrapper">
                   <img
-                    src={item.imageUrl}
+                    src={item.image_url}
                     alt={`选中的衣物${item.id}`}
                     className="selected-item-image"
                   />
@@ -140,12 +151,7 @@ const CreateOutfit = () => {
         />
 
         {/* 标签输入区域 */}
-        <TagInput
-          tags={tags}
-          setTags={setTags}
-          newTag={newTag}
-          setNewTag={setNewTag}
-        />
+        <TagInput tags={tags} setTags={setTags} isOutfitTag={true} />
 
         <button type="submit" className="btn-submit">
           创建穿搭

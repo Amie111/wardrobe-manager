@@ -1,12 +1,23 @@
 import React, { useState, useEffect, useRef } from "react";
 import { X } from "lucide-react";
-import { allTags } from "../store/data";
 
-const TagInput = ({ tags, setTags, newTag, setNewTag }) => {
+const TagInput = ({ tags, setTags, isOutfitTag = false }) => {
+  const [newTag, setNewTag] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const inputRef = useRef(null);
   const suggestionsRef = useRef(null);
+
+  // 添加标签
+  const handleAddTag = (tagToAdd = newTag) => {
+    const trimmedTag = tagToAdd.trim();
+    if (trimmedTag && !tags.includes(trimmedTag)) {
+      setTags([...tags, trimmedTag]);
+      setNewTag("");
+      setSuggestions([]);
+      setShowSuggestions(false);
+    }
+  };
 
   // 处理输入变化
   const handleInputChange = (e) => {
@@ -15,16 +26,18 @@ const TagInput = ({ tags, setTags, newTag, setNewTag }) => {
     if (value.endsWith(",") || value.endsWith("，")) {
       const tagValue = value.slice(0, -1);
       setNewTag(tagValue);
-      addTag(tagValue);
+      handleAddTag(tagValue);
       return;
     }
     setNewTag(value);
 
     // 搜索匹配的标签
     if (value.trim()) {
-      const matchedTags = allTags.filter(
+      const matchedTags = tags.filter(
         (tag) =>
-          tag.toLowerCase().includes(value.toLowerCase()) && !tags.includes(tag)
+          tag &&
+          tag.toLowerCase().includes(value.toLowerCase()) &&
+          !tags.includes(tag)
       );
       setSuggestions(matchedTags);
       setShowSuggestions(true);
@@ -38,18 +51,7 @@ const TagInput = ({ tags, setTags, newTag, setNewTag }) => {
   const handleKeyDown = (e) => {
     if (e.key === "," || e.key === "Enter" || e.key === "，") {
       e.preventDefault();
-      addTag();
-    }
-  };
-
-  // 添加标签
-  const addTag = (tagToAdd = newTag) => {
-    const trimmedTag = tagToAdd.trim();
-    if (trimmedTag && !tags.includes(trimmedTag)) {
-      setTags([...tags, trimmedTag]);
-      setNewTag("");
-      setSuggestions([]);
-      setShowSuggestions(false);
+      handleAddTag();
     }
   };
 
@@ -60,7 +62,7 @@ const TagInput = ({ tags, setTags, newTag, setNewTag }) => {
 
   // 选择建议的标签
   const selectSuggestion = (suggestion) => {
-    addTag(suggestion);
+    handleAddTag(suggestion);
     inputRef.current?.focus();
   };
 
@@ -81,7 +83,9 @@ const TagInput = ({ tags, setTags, newTag, setNewTag }) => {
 
   return (
     <div className="tag-input-container">
-      <label className="form-label">标签</label>
+      <label className="form-label">
+        {isOutfitTag ? "穿搭标签" : "衣物标签"}
+      </label>
       <div className="tag-list">
         {tags.map((tag, index) => (
           <span key={index} className="tag">
