@@ -11,17 +11,30 @@ const Home = () => {
   const [selectedTags, setSelectedTags] = useState(new Set());
   const [isTagsExpanded, setIsTagsExpanded] = useState(false);
   const [items, setItems] = useState(clothingItems);
+  const [categoryCounts, setCategoryCounts] = useState({});
 
+  // 获取分类数量
+  const getCategoryCounts = () => {
+    const counts = {};
+    categories.forEach((category) => {
+      counts[category.id] = items.filter(
+        (item) => item.category === category.id
+      ).length;
+    });
+    return counts;
+  };
+  // 初始化分类数量和衣物数据
   useEffect(() => {
     const handleDataUpdate = () => {
       setItems(clothingItems);
+      // 重新计算分类数量
+      setCategoryCounts(getCategoryCounts());
     };
-
     window.addEventListener("dataUpdated", handleDataUpdate);
     return () => {
       window.removeEventListener("dataUpdated", handleDataUpdate);
     };
-  }, []);
+  }, [items]);
 
   // 获取所有衣物标签
   const allClothingTags = [
@@ -141,6 +154,9 @@ const Home = () => {
                   onClick={() => handleCategoryClick(category.id)}
                 >
                   {category.icon} {category.label}
+                  <span className="category-count">
+                    {categoryCounts[category.id]}
+                  </span>
                 </button>
               ))}
             </div>
