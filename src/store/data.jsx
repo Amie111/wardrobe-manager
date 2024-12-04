@@ -44,13 +44,21 @@ const uploadToCloudinary = async (file) => {
 export const initializeData = async () => {
   try {
     const [clothesResponse, outfitsResponse] = await Promise.all([
-      supabase.from("clothing").select("*"),
-      supabase.from("outfits").select(`
+      supabase
+        .from("clothing")
+        .select("*")
+        .order("created_at", { ascending: false }),
+      supabase
+        .from("outfits")
+        .select(
+          `
         *,
         outfit_clothing (
           clothing (*)
         )
-      `),
+      `
+        )
+        .order("created_at", { ascending: false }),
     ]);
 
     if (clothesResponse.error || outfitsResponse.error) {
@@ -90,7 +98,7 @@ export const addClothingItem = async (item) => {
 
     if (error) throw error;
 
-    clothingItems = [...clothingItems, data[0]];
+    clothingItems = [data[0], ...clothingItems];
     // 触发更新事件
     window.dispatchEvent(new CustomEvent("dataUpdated"));
   } catch (error) {
