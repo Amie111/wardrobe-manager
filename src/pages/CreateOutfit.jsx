@@ -45,7 +45,7 @@ const CreateOutfit = () => {
       };
       await addOutfit(newOutfit);
       alert("穿搭创建成功！");
-      navigate("/outfits");
+      navigate("/");
     } catch (error) {
       alert("创建穿搭失败，请重试");
       console.error("创建穿搭失败:", error);

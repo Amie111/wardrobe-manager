@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { X } from "lucide-react";
 import { deleteClothingItem } from "../store/data";
+import { Link } from "react-router-dom";
 
 const ClothingGrid = ({ items = [] }) => {
   const [showConfirm, setShowConfirm] = useState(false);
@@ -26,41 +27,46 @@ const ClothingGrid = ({ items = [] }) => {
       <div className="grid-layout">
         {items.map((item) => (
           <div key={item.id} className="grid-item">
-            <div className="img-container">
-              <div className="img-wrapper">
-                {item.image_url ? (
-                  <>
-                    <img
-                      src={item.image_url}
-                      alt={`Clothing item${item.title}`}
-                      className="img-full"
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src =
-                          "https://placehold.co/300x300?text=No+Image";
-                      }}
-                    />
-                    <button
-                      onClick={() => handleDelete(item.id)}
-                      className="delete-btn"
-                    >
-                      <X className="delete-icon" />
-                    </button>
-                  </>
-                ) : (
-                  <div className="no-image">No Image</div>
-                )}
+            <Link to={`/clothing/${item.id}`}>
+              <div className="img-container">
+                <div className="img-wrapper">
+                  {item.image_url ? (
+                    <>
+                      <img
+                        src={item.image_url}
+                        alt={`Clothing item${item.title}`}
+                        className="img-full"
+                        loading="eager"
+                        decoding="async"
+                        crossOrigin="anonymous"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src =
+                            "https://placehold.co/300x300?text=No+Image";
+                        }}
+                      />
+                      <button
+                        onClick={() => handleDelete(item.id)}
+                        className="delete-btn"
+                      >
+                        <X className="delete-icon" />
+                      </button>
+                    </>
+                  ) : (
+                    <div className="no-image">No Image</div>
+                  )}
+                </div>
               </div>
-            </div>
-            <div className="item-content">
-              <div className="tag-container">
-                {item.tags?.map((tag, index) => (
-                  <span key={index} className="tag">
-                    {tag}
-                  </span>
-                ))}
+              <div className="item-content">
+                <div className="tag-container">
+                  {item.tags?.map((tag, index) => (
+                    <span key={index} className="tag">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
               </div>
-            </div>
+            </Link>
           </div>
         ))}
 

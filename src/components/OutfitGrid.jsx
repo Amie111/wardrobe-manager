@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { X } from "lucide-react";
 import { deleteOutfit } from "../store/data";
+import { X } from "lucide-react";
 
 const OutfitGrid = ({ outfits = [] }) => {
   const [showConfirm, setShowConfirm] = useState(false);
@@ -32,6 +32,9 @@ const OutfitGrid = ({ outfits = [] }) => {
                   src={outfit.image_urls[0]}
                   alt={outfit.name}
                   className="img-full"
+                  loading="eager"
+                  decoding="async"
+                  crossOrigin="anonymous"
                   onError={(e) => {
                     e.target.onerror = null;
                     e.target.src = "https://placehold.co/300x300?text=No+Image";
@@ -91,7 +94,7 @@ const OutfitGrid = ({ outfits = [] }) => {
         <div className="modal-overlay">
           <div className="modal-content">
             <h3 className="modal-title">确认删除</h3>
-            <p className="modal-text">确定要删除这套穿搭吗？此操作无法撤销。</p>
+            <p className="modal-text">确定要删除吗？此操作无法撤销。</p>
             <div className="modal-actions">
               <button
                 onClick={() => setShowConfirm(false)}

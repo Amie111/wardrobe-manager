@@ -17,24 +17,26 @@ const Home = () => {
   const getCategoryCounts = () => {
     const counts = {};
     categories.forEach((category) => {
-      counts[category.id] = items.filter(
+      counts[category.id] = clothingItems.filter(
         (item) => item.category === category.id
       ).length;
     });
     return counts;
   };
-  // 初始化分类数量和衣物数据
+  // 组件渲染后，初始化分类数量和衣物数据
   useEffect(() => {
     const handleDataUpdate = () => {
-      setItems(clothingItems);
-      // 重新计算分类数量
-      setCategoryCounts(getCategoryCounts());
+      setItems(clothingItems); // 更新衣物列表
+      setCategoryCounts(getCategoryCounts()); // 更新分类数量
     };
+    // 初始化时立即计算一次
+    handleDataUpdate();
     window.addEventListener("dataUpdated", handleDataUpdate);
+    // 清理：移除事件监听
     return () => {
       window.removeEventListener("dataUpdated", handleDataUpdate);
     };
-  }, [items]);
+  }, []);
 
   // 获取所有衣物标签
   const allClothingTags = [

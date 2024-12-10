@@ -1,22 +1,23 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Home, Shirt, PlusCircle } from "lucide-react";
-import { initializeData } from "../store/data";
+import { initializeData, throttledInitialize } from "../store/data";
 
 const Layout = ({ children }) => {
   // 添加 useNavigate hook
   const navigate = useNavigate();
 
-  // 添加数据初始化
+  // 组件渲染后，初始化数据（依赖项[]=只在组件首次挂载时执行一次）
   useEffect(() => {
+    // 初始化数据
     initializeData();
-    // 添加数据更新事件监听
     const handleDataUpdate = () => {
-      initializeData();
+      throttledInitialize();
     };
+    // 订阅者：添加数据更新事件监听
     window.addEventListener("dataUpdated", handleDataUpdate);
-
     return () => {
+      // 取消订阅：移除数据更新事件监听
       window.removeEventListener("dataUpdated", handleDataUpdate);
     };
   }, []);
