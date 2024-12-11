@@ -29,8 +29,8 @@ const Home = () => {
       setItems(clothingItems); // 更新衣物列表
       setCategoryCounts(getCategoryCounts()); // 更新分类数量
     };
-    // 初始化时立即计算一次
-    handleDataUpdate();
+    // // 初始化时立即计算一次
+    // handleDataUpdate();
     window.addEventListener("dataUpdated", handleDataUpdate);
     // 清理：移除事件监听
     return () => {

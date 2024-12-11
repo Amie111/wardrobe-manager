@@ -7,6 +7,7 @@ import CreateOutfit from "./pages/CreateOutfit";
 import Outfits from "./components/Outfit";
 import { initializeData } from "./store/data";
 import ClothingDetail from "./pages/ClothingDetail";
+import OutfitDetail from "./pages/OutfitDetail";
 
 function App() {
   useEffect(() => {
@@ -22,6 +23,7 @@ function App() {
           <Route path="/create-outfit" element={<CreateOutfit />} />
           <Route path="/outfits" element={<Outfits />} />
           <Route path="/clothing/:id" element={<ClothingDetail />} />
+          <Route path="/outfit/:id" element={<OutfitDetail />} />
         </Routes>
       </Layout>
     </Router>

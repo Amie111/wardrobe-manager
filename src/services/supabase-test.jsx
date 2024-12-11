@@ -1,28 +1,61 @@
-import { supabase } from '../config/supabase.js';
+import { supabase } from "../config/supabase";
 
-const testSupabaseConnection = async () => {
+export const testSupabaseConnection = async () => {
   try {
-    console.log('Testing Supabase connection...');
-    const { data, error } = await supabase
-      .from('clothing')
+    // Test basic connection
+    const { data: connectionTest, error: connectionError } = await supabase
+      .from('outfits')
       .select('*')
       .limit(1);
     
-    if (error) {
-      console.error('Supabase connection test failed:', error.message);
-      return false;
+    if (connectionError) {
+      console.error('Connection test failed:', connectionError);
+      return {
+        success: false,
+        error: connectionError,
+        details: 'Failed to connect to Supabase or access outfits table'
+      };
     }
-    
-    console.log('Supabase connection successful!');
-    console.log('Test data:', data);
-    return true;
-  } catch (err) {
-    console.error('Supabase connection test failed:', err.message);
-    return false;
+
+    // Test insert permission
+    const testData = {
+      name: 'Test Outfit',
+      image_urls: [],
+      tags: []
+    };
+
+    const { data: insertTest, error: insertError } = await supabase
+      .from('outfits')
+      .insert([testData])
+      .select();
+
+    if (insertError) {
+      console.error('Insert test failed:', insertError);
+      return {
+        success: false,
+        error: insertError,
+        details: 'Failed to insert into outfits table'
+      };
+    }
+
+    // If we got here, clean up the test data
+    if (insertTest && insertTest[0]?.id) {
+      await supabase
+        .from('outfits')
+        .delete()
+        .eq('id', insertTest[0].id);
+    }
+
+    return {
+      success: true,
+      details: 'Successfully connected and tested outfits table'
+    };
+  } catch (error) {
+    console.error('Test failed:', error);
+    return {
+      success: false,
+      error,
+      details: 'Unexpected error during test'
+    };
   }
 };
-
-// Run the test
-testSupabaseConnection();
-
-export default testSupabaseConnection;

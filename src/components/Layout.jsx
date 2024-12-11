@@ -10,7 +10,7 @@ const Layout = ({ children }) => {
   // 组件渲染后，初始化数据（依赖项[]=只在组件首次挂载时执行一次）
   useEffect(() => {
     // 初始化数据
-    initializeData();
+    // initializeData();
     const handleDataUpdate = () => {
       throttledInitialize();
     };

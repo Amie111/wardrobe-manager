@@ -27,46 +27,43 @@ const ClothingGrid = ({ items = [] }) => {
       <div className="grid-layout">
         {items.map((item) => (
           <div key={item.id} className="grid-item">
-            <Link to={`/clothing/${item.id}`}>
-              <div className="img-container">
-                <div className="img-wrapper">
+            <div className="img-container">
+              <div className="img-wrapper">
+                <Link to={`/clothing/${item.id}`}>
                   {item.image_url ? (
                     <>
                       <img
                         src={item.image_url}
                         alt={`Clothing item${item.title}`}
                         className="img-full"
-                        loading="eager"
-                        decoding="async"
-                        crossOrigin="anonymous"
                         onError={(e) => {
                           e.target.onerror = null;
                           e.target.src =
                             "https://placehold.co/300x300?text=No+Image";
                         }}
                       />
-                      <button
-                        onClick={() => handleDelete(item.id)}
-                        className="delete-btn"
-                      >
-                        <X className="delete-icon" />
-                      </button>
                     </>
                   ) : (
                     <div className="no-image">No Image</div>
                   )}
-                </div>
+                </Link>
+                <button
+                  onClick={() => handleDelete(item.id)}
+                  className="delete-btn"
+                >
+                  <X className="delete-icon" />
+                </button>
               </div>
-              <div className="item-content">
-                <div className="tag-container">
-                  {item.tags?.map((tag, index) => (
-                    <span key={index} className="tag">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
+            </div>
+            <div className="item-content">
+              <div className="tag-container">
+                {item.tags?.map((tag, index) => (
+                  <span key={index} className="tag">
+                    {tag}
+                  </span>
+                ))}
               </div>
-            </Link>
+            </div>
           </div>
         ))}
 

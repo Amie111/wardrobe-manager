@@ -107,6 +107,7 @@ export const initializeData = async () => {
   }
 };
 
+//////////////////////////////////////////////////////////////////
 // 添加衣物
 export const addClothingItem = async (item) => {
   try {
@@ -137,6 +138,7 @@ export const addClothingItem = async (item) => {
   }
 };
 
+//////////////////////////////////////////////////////////////////
 // 获取特定衣物的详细信息
 export const getClothingById = async (id) => {
   try {
@@ -155,6 +157,7 @@ export const getClothingById = async (id) => {
   }
 };
 
+//////////////////////////////////////////////////////////////////
 // 更新衣物信息
 export const updateClothingItem = async (id, updatedItem) => {
   try {
@@ -181,14 +184,15 @@ export const updateClothingItem = async (id, updatedItem) => {
       item.id === id ? { ...item, ...data[0] } : item
     );
 
-    // 触发更新事件
-    window.dispatchEvent(new CustomEvent("dataUpdated"));
+    // // 触发更新事件
+    // window.dispatchEvent(new CustomEvent("dataUpdated"));
   } catch (error) {
     console.error("更新衣物失败:", error);
     throw error;
   }
 };
 
+//////////////////////////////////////////////////////////////////
 // 添加穿搭
 export const addOutfit = async (outfit) => {
   try {
@@ -240,8 +244,8 @@ export const addOutfit = async (outfit) => {
 
     if (fetchError) throw fetchError;
 
-    // 触发事件让 Layout 组件重新获取数据
-    window.dispatchEvent(new CustomEvent("dataUpdated"));
+    // // 触发事件让 Layout 组件重新获取数据
+    // window.dispatchEvent(new CustomEvent("dataUpdated"));
 
     return completeOutfit;
   } catch (error) {
@@ -250,6 +254,7 @@ export const addOutfit = async (outfit) => {
   }
 };
 
+//////////////////////////////////////////////////////////////////
 // 获取穿搭组合中所有的衣物
 export const getOutfitItems = async (outfitId) => {
   try {
@@ -266,6 +271,7 @@ export const getOutfitItems = async (outfitId) => {
   }
 };
 
+//////////////////////////////////////////////////////////////////
 // 删除衣物
 export const deleteClothingItem = async (id) => {
   try {
@@ -283,6 +289,7 @@ export const deleteClothingItem = async (id) => {
   }
 };
 
+//////////////////////////////////////////////////////////////////
 // 删除穿搭
 export const deleteOutfit = async (id) => {
   try {
@@ -296,6 +303,108 @@ export const deleteOutfit = async (id) => {
     window.dispatchEvent(new CustomEvent("dataUpdated"));
   } catch (error) {
     console.error("删除穿搭失败:", error);
+    throw error;
+  }
+};
+
+//////////////////////////////////////////////////////////////////
+// 按照id获取特定穿搭的详细信息
+export const getOutfitById = async (id) => {
+  try {
+    const { data, error } = await supabase
+      .from("outfits")
+      .select(
+        `
+        *,
+        outfit_clothing (
+          clothing (*)
+        )
+      `
+      )
+      .eq("id", id)
+      .single(); // 获取单个记录
+
+    if (error) throw error;
+
+    return data;
+  } catch (error) {
+    console.error("获取穿搭失败:", error);
+    throw error;
+  }
+};
+
+//////////////////////////////////////////////////////////////////
+// 更新穿搭信息
+// //   const updatedOutfit = {
+//   name,
+//   tags: tags,
+//   image_urls: imageUrls.length > 0 ? imageUrls : [],
+//   items: selectedItems,
+// };
+export const updateOutfit = async (id, outfitData) => {
+  try {
+    const { data: updatedOutfit, error: outfitError } = await supabase
+      .from("outfits")
+      .update({
+        name: outfitData.name,
+        image_urls: outfitData.image_urls,
+        tags: outfitData.tags,
+      })
+      .eq("id", id)
+      .select();
+
+    if (outfitError) throw outfitError;
+
+    // 如果提供了 items，更新关联关系
+    if (outfitData.items) {
+      // 删除现有关系
+      const { error: deleteError } = await supabase
+        .from("outfit_clothing")
+        .delete()
+        .eq("outfit_id", id);
+
+      if (deleteError) throw deleteError;
+
+      // 添加新关系
+      if (outfitData.items.length > 0) {
+        const relationships = outfitData.items.map((clothing_id) => ({
+          outfit_id: id,
+          clothing_id,
+        }));
+
+        const { error: relationError } = await supabase
+          .from("outfit_clothing")
+          .insert(relationships);
+
+        if (relationError) throw relationError;
+      }
+    }
+
+    // 获取完整的outfit数据(包括关联的clothing)
+    const { data: completeOutfit, error: fetchError } = await supabase
+      .from("outfits")
+      .select(
+        `
+     *,
+     outfit_clothing (
+       clothing (*)
+     )
+   `
+      )
+      .eq("id", id)
+      .single();
+
+    if (fetchError) throw fetchError;
+
+    // 更新本地状态
+    outfits = [completeOutfit, ...outfits];
+
+    // // 触发更新事件
+    // window.dispatchEvent(new CustomEvent("dataUpdated"));
+
+    return completeOutfit;
+  } catch (error) {
+    console.error("更新穿搭失败:", error);
     throw error;
   }
 };

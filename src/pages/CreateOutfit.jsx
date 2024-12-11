@@ -17,7 +17,7 @@ const CreateOutfit = () => {
 
   const filteredClothingItems = selectedFilterCategory
     ? clothingItems.filter((item) => item.category === selectedFilterCategory)
-    : clothingItems;
+    : [];
 
   // 处理衣物选择
   const handleItemSelect = (item) => {
@@ -43,6 +43,7 @@ const CreateOutfit = () => {
         tags: tags,
         photo: photo,
       };
+
       await addOutfit(newOutfit);
       alert("穿搭创建成功！");
       navigate("/");
@@ -77,7 +78,7 @@ const CreateOutfit = () => {
             onChange={(e) => setSelectedFilterCategory(e.target.value)}
             className="outfit-category-select"
           >
-            <option value="">所有类别</option>
+            <option value="">请选择类别</option>
             {categories.map((category) => (
               <option key={category.id} value={category.id}>
                 {category.icon} {category.label}
