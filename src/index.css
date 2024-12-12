@@ -23,7 +23,7 @@
 
   /* 按钮相关 */
   .btn-primary {
-    @apply flex items-center px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600;
+    @apply flex items-center px-4 py-2 bg-indigo-50 text-gray-700 rounded-md hover:bg-indigo-200;
   }
 
   .btn-secondary {
@@ -49,7 +49,7 @@
 
   /* 标签相关 */
   .tag {
-    @apply inline-flex items-center px-2 py-1 rounded-full text-sm bg-blue-100 text-blue-700;
+    @apply inline-flex items-center px-2 py-1 rounded-full text-sm bg-indigo-50 text-gray-700;
   }
 
   .tag-container {
@@ -136,15 +136,38 @@
 
   /* 图片相关 */
   .img-container {
-    @apply relative pt-[100%];
+    @apply relative w-full;
   }
 
   .img-wrapper {
-    @apply absolute inset-0 bg-gray-100 flex items-center justify-center;
+    @apply relative w-full aspect-square;
   }
 
   .img-full {
-    @apply w-full h-full object-cover;
+    @apply absolute w-full h-full object-cover;
+  }
+
+  .image-placeholder {
+    @apply absolute inset-0 w-full h-full bg-gray-100;
+  }
+
+  .optimized-image {
+    @apply absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ease-in-out opacity-0;
+  }
+
+  .optimized-image.loaded {
+    @apply opacity-100;
+  }
+  .preview-item-container {
+    @apply relative w-1/2;
+  }
+  /* 无图片占位样式 */
+  .no-image-placeholder {
+    @apply relative w-full pb-[100%] bg-gray-100 flex items-center justify-center;
+  }
+
+  .no-image-text {
+    @apply absolute inset-0 flex items-center justify-center text-gray-400;
   }
 
   /* 删除按钮 */
@@ -245,35 +268,23 @@
 
   /* 穿搭卡片相关 */
   .outfit-card {
-    @apply bg-white rounded-lg shadow-md overflow-hidden;
+    @apply relative aspect-square bg-white rounded-lg shadow-md overflow-hidden;
   }
 
-  .outfit-photo-container {
-    @apply relative aspect-square;
+  .outfit-items-preview {
+    @apply relative w-full h-full pb-[100%]  grid grid-cols-2 gap-1;
   }
 
-  .outfit-photo {
-    @apply w-full h-full object-cover;
+  .outfit-item-preview {
+    @apply relative;
   }
 
-  .outfit-items-grid {
-    @apply grid grid-cols-2 gap-1 p-1;
+  .outfit-item-preview.empty {
+    @apply bg-gray-100;
   }
 
-  .outfit-item-photo {
-    @apply w-full aspect-square object-cover rounded-md;
-  }
-
-  .outfit-info {
-    @apply p-4;
-  }
-
-  .outfit-name {
-    @apply text-lg font-semibold mb-2;
-  }
-
-  .outfit-description {
-    @apply text-sm text-gray-600 mb-3;
+  .outfit-title {
+    @apply text-lg font-semibold mb-2 truncate;
   }
 
   .page-header {
@@ -416,9 +427,8 @@
     @apply px-3 py-1 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200;
   }
 
-  .category-btn.active,
   .tag-btn.active {
-    @apply bg-blue-100 text-blue-600;
+    @apply bg-blue-50 text-blue-600;
   }
 
   /* 分类区域样式 */
@@ -427,16 +437,16 @@
   }
 
   .category-filters {
-    @apply flex flex-wrap gap-2;
+    @apply flex flex-wrap gap-3;
   }
 
   .category-btn {
-    @apply px-4 py-2 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 
+    @apply px-4 py-2 rounded-lg bg-blue-50 text-gray-600 hover:bg-blue-100 
            flex items-center gap-2 transition-colors duration-200;
   }
 
   .category-btn.active {
-    @apply bg-blue-600 text-white;
+    @apply bg-blue-400 text-white;
   }
 
   /* 标签区域样式 */
@@ -467,5 +477,53 @@
   .expand-tags-btn {
     @apply text-sm text-gray-500 hover:text-gray-700 mt-2 
            transition-colors duration-200;
+  }
+
+  /* 删除图标 */
+  .delete-icon {
+    @apply icon-sm text-gray-500;
+  }
+
+  /* 无图片状态 */
+  .no-image {
+    @apply text-gray-400;
+  }
+
+  /* 衣物内容区域 */
+  .item-content {
+    @apply p-4;
+  }
+
+  /* 模态框相关样式 */
+  .modal-overlay {
+    @apply fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50;
+  }
+
+  .modal-content {
+    @apply bg-white p-6 rounded-lg shadow-xl;
+  }
+
+  .modal-title {
+    @apply text-lg font-medium mb-4;
+  }
+
+  .modal-text {
+    @apply text-gray-600 mb-6;
+  }
+
+  .modal-actions {
+    @apply flex justify-end gap-4;
+  }
+
+  .btn-cancel {
+    @apply px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-md;
+  }
+
+  .btn-delete {
+    @apply px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600;
+  }
+
+  .category-count {
+    @apply ml-2 px-2 py-0.5 text-sm;
   }
 }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ClothingGrid from "../components/ClothingGrid";
 import OutfitGrid from "../components/OutfitGrid";
 import { clothingItems, outfits } from "../store/data";
@@ -10,10 +10,50 @@ const Home = () => {
   const [selectedCategories, setSelectedCategories] = useState(new Set());
   const [selectedTags, setSelectedTags] = useState(new Set());
   const [isTagsExpanded, setIsTagsExpanded] = useState(false);
+  const [items, setItems] = useState([]);
+  const [categoryCounts, setCategoryCounts] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  // 获取分类数量
+  const getCategoryCounts = () => {
+    const counts = {};
+    categories.forEach((category) => {
+      counts[category.id] = clothingItems.filter(
+        (item) => item.category === category.id
+      ).length;
+    });
+    return counts;
+  };
+  // 组件渲染后，初始化分类数量和衣物数据
+  useEffect(() => {
+    const handleDataUpdate = () => {
+      if (clothingItems && clothingItems.length > 0) {
+        setItems(clothingItems); // 更新衣物列表
+        setCategoryCounts(getCategoryCounts()); // 更新分类数量
+      }
+      setLoading(false);
+    };
+
+    //首次渲染时更新一次
+    handleDataUpdate();
+    window.addEventListener("dataUpdated", handleDataUpdate);
+    // 清理：移除事件监听
+    return () => {
+      window.removeEventListener("dataUpdated", handleDataUpdate);
+    };
+  }, []);
+
+  if (loading && (!items || items.length === 0)) {
+    return (
+      <div className="flex items-center justify-center min-h-[200px]">
+        <div>加载中...</div>
+      </div>
+    );
+  }
 
   // 获取所有衣物标签
   const allClothingTags = [
-    ...new Set(clothingItems.flatMap((item) => item.tags || [])),
+    ...new Set(items.flatMap((item) => item.tags || [])),
   ];
 
   // 获取所有穿搭标签
@@ -22,12 +62,21 @@ const Home = () => {
   ];
 
   // 筛选衣物
-  const filteredClothingItems = clothingItems.filter((item) => {
+  const filteredClothingItems = items.filter((item) => {
+    // 如果没有选择任何筛选条件，显示所有衣物
+    if (selectedCategories.size === 0 && selectedTags.size === 0) {
+      return true;
+    }
+    // 检查类别匹配
     const matchCategory =
       selectedCategories.size === 0 || selectedCategories.has(item.category);
+    // 检查标签匹配
     const matchTag =
       selectedTags.size === 0 ||
-      (item.tags || []).some((tag) => selectedTags.has(tag));
+      (item.tags &&
+        selectedTags.size > 0 &&
+        Array.from(selectedTags).every((tag) => item.tags.includes(tag)));
+    // 同时满足类别和标签条件
     return matchCategory && matchTag;
   });
 
@@ -96,13 +145,13 @@ const Home = () => {
           className={`tab-btn ${activeTab === "clothing" ? "active" : ""}`}
           onClick={() => setActiveTab("clothing")}
         >
-          衣物
+          Clothings
         </button>
         <button
           className={`tab-btn ${activeTab === "outfits" ? "active" : ""}`}
           onClick={() => setActiveTab("outfits")}
         >
-          穿搭
+          Outfits
         </button>
       </div>
 
@@ -120,6 +169,9 @@ const Home = () => {
                   onClick={() => handleCategoryClick(category.id)}
                 >
                   {category.icon} {category.label}
+                  <span className="category-count">
+                    {categoryCounts[category.id]}
+                  </span>
                 </button>
               ))}
             </div>

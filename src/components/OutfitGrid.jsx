@@ -1,35 +1,79 @@
-import React from "react";
+import React, { useState } from "react";
+import { deleteOutfit } from "../store/data";
+import { X } from "lucide-react";
+import { Link } from "react-router-dom";
+import { OptimizedImage } from "./ClothingGrid"; // 复用优化的图片组件
 
 const OutfitGrid = ({ outfits = [] }) => {
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
+
+  const handleDelete = async (id) => {
+    setSelectedId(id);
+    setShowConfirm(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await deleteOutfit(selectedId);
+      setShowConfirm(false);
+      setSelectedId(null);
+    } catch (error) {
+      alert("删除失败，请重试");
+    }
+  };
+
   return (
     <div className="grid-layout">
       {outfits.map((outfit) => (
-        <div key={outfit.id} className="outfit-card">
-          {/* 穿搭照片展示 */}
-          <div className="outfit-photo-container">
-            {outfit.image_urls?.length > 0 ? (
-              <img
-                src={outfit.image_urls[0]}
-                alt={outfit.name}
-                className="outfit-photo"
-              />
-            ) : (
-              <div className="outfit-items-grid">
-                {outfit.outfit_clothing?.map((relation) => (
-                  <img
-                    key={relation.clothing.id}
-                    src={relation.clothing.image_url}
-                    alt={`服装${relation.clothing.id}`}
-                    className="outfit-item-photo"
+        <div key={outfit.id} className="grid-item">
+          <div className="img-container">
+            <div className="img-wrapper">
+              <Link to={`/outfit/${outfit.id}`}>
+                {outfit.image_urls?.length > 0 ? (
+                  // 如果有上传的穿搭照片就显示照片
+                  <OptimizedImage
+                    src={outfit.image_urls[0]}
+                    alt={outfit.name}
+                    className="img-full"
                   />
-                ))}
-              </div>
-            )}
+                ) : (
+                  // 否则显示2x2网格的衣物预览
+                  <div className="outfit-items-preview">
+                    {outfit.outfit_clothing?.slice(0, 4).map((relation) => (
+                      <OptimizedImage
+                        key={relation.clothing.id}
+                        src={relation.clothing.image_url}
+                        alt={`服装${relation.clothing.id}`}
+                        className="outfit-item-preview"
+                      />
+                    ))}
+                    {/* 如果衣物不足4件,用空白填充 */}
+                    {Array.from({
+                      length: Math.max(
+                        0,
+                        4 - (outfit.outfit_clothing?.length || 0)
+                      ),
+                    }).map((_, index) => (
+                      <div
+                        key={`empty-${index}`}
+                        className="outfit-item-preview empty"
+                      />
+                    ))}
+                  </div>
+                )}
+              </Link>
+              <button
+                onClick={() => handleDelete(outfit.id)}
+                className="delete-btn"
+              >
+                <X className="delete-icon" />
+              </button>
+            </div>
           </div>
 
-          {/* 穿搭信息 */}
-          <div className="outfit-info">
-            <h3 className="outfit-name">{outfit.name}</h3>
+          <div className="item-content">
+            <h3 className="outfit-title">{outfit.name}</h3>
             <div className="tag-container">
               {outfit.tags?.map((tag, index) => (
                 <span key={index} className="tag">
@@ -44,8 +88,28 @@ const OutfitGrid = ({ outfits = [] }) => {
       {outfits.length === 0 && (
         <div className="empty-state">还没有创建任何穿搭...</div>
       )}
+      {/* 确认删除对话框 */}
+      {showConfirm && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3 className="modal-title">确认删除</h3>
+            <p className="modal-text">确定要删除吗？此操作无法撤销。</p>
+            <div className="modal-actions">
+              <button
+                onClick={() => setShowConfirm(false)}
+                className="btn-cancel"
+              >
+                取消
+              </button>
+              <button onClick={confirmDelete} className="btn-delete">
+                删除
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-export default OutfitGrid;
+export default React.memo(OutfitGrid);
