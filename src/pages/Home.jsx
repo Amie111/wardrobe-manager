@@ -10,8 +10,9 @@ const Home = () => {
   const [selectedCategories, setSelectedCategories] = useState(new Set());
   const [selectedTags, setSelectedTags] = useState(new Set());
   const [isTagsExpanded, setIsTagsExpanded] = useState(false);
-  const [items, setItems] = useState(clothingItems);
+  const [items, setItems] = useState([]);
   const [categoryCounts, setCategoryCounts] = useState({});
+  const [loading, setLoading] = useState(true);
 
   // 获取分类数量
   const getCategoryCounts = () => {
@@ -26,17 +27,29 @@ const Home = () => {
   // 组件渲染后，初始化分类数量和衣物数据
   useEffect(() => {
     const handleDataUpdate = () => {
-      setItems(clothingItems); // 更新衣物列表
-      setCategoryCounts(getCategoryCounts()); // 更新分类数量
+      if (clothingItems && clothingItems.length > 0) {
+        setItems(clothingItems); // 更新衣物列表
+        setCategoryCounts(getCategoryCounts()); // 更新分类数量
+      }
+      setLoading(false);
     };
-    // // 初始化时立即计算一次
-    // handleDataUpdate();
+
+    //首次渲染时更新一次
+    handleDataUpdate();
     window.addEventListener("dataUpdated", handleDataUpdate);
     // 清理：移除事件监听
     return () => {
       window.removeEventListener("dataUpdated", handleDataUpdate);
     };
   }, []);
+
+  if (loading && (!items || items.length === 0)) {
+    return (
+      <div className="flex items-center justify-center min-h-[200px]">
+        <div>加载中...</div>
+      </div>
+    );
+  }
 
   // 获取所有衣物标签
   const allClothingTags = [

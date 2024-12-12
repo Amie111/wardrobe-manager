@@ -136,15 +136,38 @@
 
   /* 图片相关 */
   .img-container {
-    @apply relative pt-[100%];
+    @apply relative w-full;
   }
 
   .img-wrapper {
-    @apply absolute inset-0 bg-gray-100 flex items-center justify-center;
+    @apply relative w-full aspect-square;
   }
 
   .img-full {
-    @apply w-full h-full object-cover;
+    @apply absolute w-full h-full object-cover;
+  }
+
+  .image-placeholder {
+    @apply absolute inset-0 w-full h-full bg-gray-100;
+  }
+
+  .optimized-image {
+    @apply absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ease-in-out opacity-0;
+  }
+
+  .optimized-image.loaded {
+    @apply opacity-100;
+  }
+  .preview-item-container {
+    @apply relative w-1/2;
+  }
+  /* 无图片占位样式 */
+  .no-image-placeholder {
+    @apply relative w-full pb-[100%] bg-gray-100 flex items-center justify-center;
+  }
+
+  .no-image-text {
+    @apply absolute inset-0 flex items-center justify-center text-gray-400;
   }
 
   /* 删除按钮 */
@@ -249,11 +272,11 @@
   }
 
   .outfit-items-preview {
-    @apply w-full h-full grid grid-cols-2 gap-0.5;
+    @apply relative w-full h-full pb-[100%]  grid grid-cols-2 gap-1;
   }
 
   .outfit-item-preview {
-    @apply w-full h-full object-cover;
+    @apply relative;
   }
 
   .outfit-item-preview.empty {

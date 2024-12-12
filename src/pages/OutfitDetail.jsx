@@ -19,15 +19,21 @@ const OutfitDetail = () => {
 
   useEffect(() => {
     const fetchOutfit = async () => {
-      const data = await getOutfitById(id);
-      setOutfit(data);
-      setTags(data.tags || []);
-      setName(data.name);
-      setImageUrls(data.image_urls || []);
-      setSelectedItems(data.outfit_clothing.map((item) => item.clothing.id)); // 设置已选衣物
+      try {
+        const data = await getOutfitById(id);
+        setOutfit(data);
+        setTags(data.tags || []);
+        setName(data.name);
+        setImageUrls(data.image_urls || []);
+        setSelectedItems(data.outfit_clothing.map((item) => item.clothing.id)); // 设置已选衣物
+      } catch (error) {
+        console.log("获取穿搭详情失败", error);
+      }
     };
-    fetchOutfit();
-  }, [id]);
+    if (id) {
+      fetchOutfit();
+    }
+  }, [id]); // 只依赖于 id 变化
 
   const handleItemSelect = (item) => {
     if (!selectedItems.includes(item.id)) {

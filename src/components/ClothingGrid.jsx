@@ -1,7 +1,44 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { X } from "lucide-react";
 import { deleteClothingItem } from "../store/data";
 import { Link } from "react-router-dom";
+import { getOptimizedImageUrl } from "../config/cloudinary";
+
+// 创建优化的图片组件
+export const OptimizedImage = React.memo(
+  ({ src, alt, className = "", onLoad }) => {
+    const [isLoaded, setIsLoaded] = useState(false);
+    const [error, setError] = useState(false);
+
+    const optimizedSrc = getOptimizedImageUrl(src, { thumbnail: true });
+
+    const handleLoad = useCallback(() => {
+      setIsLoaded(true);
+      onLoad?.();
+    }, [onLoad]);
+
+    const handleError = useCallback((e) => {
+      setError(true);
+      e.target.onerror = null;
+      e.target.src = "https://placehold.co/300x300?text=No+Image";
+    }, []);
+
+    if (error) {
+      return <div className="no-image-placeholder">No Image</div>;
+    }
+
+    return (
+      <img
+        src={optimizedSrc}
+        alt={alt}
+        className={`optimized-image ${className} ${isLoaded ? "loaded" : ""}`}
+        loading="lazy"
+        onLoad={handleLoad}
+        onError={handleError}
+      />
+    );
+  }
+);
 
 const ClothingGrid = ({ items = [] }) => {
   const [showConfirm, setShowConfirm] = useState(false);
@@ -31,20 +68,15 @@ const ClothingGrid = ({ items = [] }) => {
               <div className="img-wrapper">
                 <Link to={`/clothing/${item.id}`}>
                   {item.image_url ? (
-                    <>
-                      <img
-                        src={item.image_url}
-                        alt={`Clothing item${item.title}`}
-                        className="img-full"
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src =
-                            "https://placehold.co/300x300?text=No+Image";
-                        }}
-                      />
-                    </>
+                    <OptimizedImage
+                      src={item.image_url}
+                      alt={`Clothing item ${item.title}`}
+                      className="img-full"
+                    />
                   ) : (
-                    <div className="no-image">No Image</div>
+                    <div className="no-image-placeholder">
+                      <div className="no-image-text">No Image</div>
+                    </div>
                   )}
                 </Link>
                 <button
@@ -96,4 +128,4 @@ const ClothingGrid = ({ items = [] }) => {
   );
 };
 
-export default ClothingGrid;
+export default React.memo(ClothingGrid);

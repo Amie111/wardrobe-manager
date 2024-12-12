@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { deleteOutfit } from "../store/data";
 import { X } from "lucide-react";
 import { Link } from "react-router-dom";
+import { OptimizedImage } from "./ClothingGrid"; // 复用优化的图片组件
 
 const OutfitGrid = ({ outfits = [] }) => {
   const [showConfirm, setShowConfirm] = useState(false);
@@ -31,21 +32,16 @@ const OutfitGrid = ({ outfits = [] }) => {
               <Link to={`/outfit/${outfit.id}`}>
                 {outfit.image_urls?.length > 0 ? (
                   // 如果有上传的穿搭照片就显示照片
-                  <img
+                  <OptimizedImage
                     src={outfit.image_urls[0]}
                     alt={outfit.name}
                     className="img-full"
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src =
-                        "https://placehold.co/300x300?text=No+Image";
-                    }}
                   />
                 ) : (
                   // 否则显示2x2网格的衣物预览
                   <div className="outfit-items-preview">
                     {outfit.outfit_clothing?.slice(0, 4).map((relation) => (
-                      <img
+                      <OptimizedImage
                         key={relation.clothing.id}
                         src={relation.clothing.image_url}
                         alt={`服装${relation.clothing.id}`}
@@ -116,4 +112,4 @@ const OutfitGrid = ({ outfits = [] }) => {
   );
 };
 
-export default OutfitGrid;
+export default React.memo(OutfitGrid);

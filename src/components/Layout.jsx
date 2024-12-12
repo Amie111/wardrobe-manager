@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Home, Shirt, PlusCircle } from "lucide-react";
 import { initializeData, throttledInitialize } from "../store/data";
@@ -6,14 +6,25 @@ import { initializeData, throttledInitialize } from "../store/data";
 const Layout = ({ children }) => {
   // 添加 useNavigate hook
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
 
-  // 组件渲染后，初始化数据（依赖项[]=只在组件首次挂载时执行一次）
   useEffect(() => {
-    // 初始化数据
-    // initializeData();
-    const handleDataUpdate = () => {
-      throttledInitialize();
+    //初始加载数据
+    const loadInitialData = async () => {
+      try {
+        const success = await initializeData();
+        if (!success) {
+          console.error("数据加载失败");
+        }
+      } catch (error) {
+        console.error("初始化数据失败:", error);
+      } finally {
+        setIsLoading(false);
+      }
     };
+    loadInitialData();
+    // 监听后续更新
+    const handleDataUpdate = throttledInitialize;
     // 订阅者：添加数据更新事件监听
     window.addEventListener("dataUpdated", handleDataUpdate);
     return () => {
@@ -35,6 +46,14 @@ const Layout = ({ children }) => {
   const handleCreateOutfitClick = () => {
     navigate("/create-outfit");
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div>加载中...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="layout-container">

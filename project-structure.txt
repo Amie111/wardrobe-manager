@@ -1,0 +1,48 @@
+.
+├── public
+│   ├── favicon.ico
+│   ├── index.html
+│   ├── logo192.png
+│   ├── logo512.png
+│   ├── manifest.json
+│   └── robots.txt
+├── src
+│   ├── components
+│   │   ├── ClothingGrid.jsx
+│   │   ├── ImageUpload.jsx
+│   │   ├── Layout.jsx
+│   │   ├── Outfit.jsx
+│   │   ├── OutfitGrid.jsx
+│   │   ├── TagInput.jsx
+│   │   └── UploadForm.jsx
+│   ├── config
+│   │   ├── cloudinary.jsx
+│   │   ├── config.jsx
+│   │   └── supabase.js
+│   ├── hooks
+│   ├── pages
+│   │   ├── ClothingDetail.jsx
+│   │   ├── CreateOutfit.jsx
+│   │   ├── Home.jsx
+│   │   └── OutfitDetail.jsx
+│   ├── store
+│   │   └── data.jsx
+│   ├── utils
+│   ├── App.css
+│   ├── App.jsx
+│   ├── App.test.js
+│   ├── index.css
+│   ├── index.jsx
+│   ├── logo.svg
+│   ├── reportWebVitals.js
+│   └── setupTests.js
+├── README.md
+├── changes.patch
+├── package-lock.json
+├── package.json
+├── postcss.config.js
+├── project-structure.txt
+├── tailwind.config.js
+└── test.js
+
+10 directories, 39 files

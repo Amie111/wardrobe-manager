@@ -4,14 +4,13 @@ import { throttle } from "lodash";
 // 声明状态变量
 let clothingItems = [];
 let outfits = [];
-
-// 导出
 export { clothingItems, outfits };
 
+///////////////////////////////////////////////
 // 上传图片到 Cloudinary
 const uploadToCloudinary = async (file) => {
   try {
-    // 创建 FormData
+    // 创建 FormData实例，将文件和必要的配置信息打包成 FormData 格式
     const formData = new FormData();
     formData.append("file", file);
     formData.append(
@@ -41,6 +40,7 @@ const uploadToCloudinary = async (file) => {
   }
 };
 
+///////////////////////////////////////////////
 // 添加数据对比函数
 const hasDataChanged = (newClothes, newOutfits) => {
   // 如果数据长度不同，说明有变化
@@ -64,11 +64,26 @@ const hasDataChanged = (newClothes, newOutfits) => {
   return clothesChanged || outfitsChanged;
 };
 
+///////////////////////////////////////////////
 // 添加节流函数
 export const throttledInitialize = throttle(async () => {
-  await initializeData();
+  try {
+    await initializeData();
+  } catch (error) {
+    console.error("初始化数据失败：", error);
+  }
 }, 1000);
 
+///////////////////////////////////////////////
+// 控制数据更新事件的触发
+const notifyDataUpdate = () => {
+  // 只在确实需要更新时触发事件
+  if (window.dispatchEvent) {
+    window.dispatchEvent(new CustomEvent("dataUpdated"));
+  }
+};
+
+////////////////////////////////////////////////////////////////////////
 // 初始化数据
 export const initializeData = async () => {
   try {
@@ -95,12 +110,10 @@ export const initializeData = async () => {
     }
 
     // 如果获取成功，先处理Promise.all的response结果
-    if (hasDataChanged(clothesResponse.data, outfitsResponse.data)) {
-      clothingItems = clothesResponse.data;
-      outfits = outfitsResponse.data;
-      // 发布者：触发"dataUpdated"事件
-      window.dispatchEvent(new CustomEvent("dataUpdated"));
-    }
+    clothingItems = clothesResponse.data || [];
+    outfits = outfitsResponse.data || [];
+    notifyDataUpdate(); // 确保触发更新事件
+    return true;
   } catch (error) {
     console.error("初始化数据失败:", error);
     return false;
@@ -131,7 +144,7 @@ export const addClothingItem = async (item) => {
     // 更新本地状态
     clothingItems = [data[0], ...clothingItems];
     // 触发更新事件
-    window.dispatchEvent(new CustomEvent("dataUpdated"));
+    notifyDataUpdate();
   } catch (error) {
     console.error("添加衣物失败:", error);
     throw error;
@@ -183,9 +196,6 @@ export const updateClothingItem = async (id, updatedItem) => {
     clothingItems = clothingItems.map((item) =>
       item.id === id ? { ...item, ...data[0] } : item
     );
-
-    // // 触发更新事件
-    // window.dispatchEvent(new CustomEvent("dataUpdated"));
   } catch (error) {
     console.error("更新衣物失败:", error);
     throw error;
@@ -244,9 +254,6 @@ export const addOutfit = async (outfit) => {
 
     if (fetchError) throw fetchError;
 
-    // // 触发事件让 Layout 组件重新获取数据
-    // window.dispatchEvent(new CustomEvent("dataUpdated"));
-
     return completeOutfit;
   } catch (error) {
     console.error("添加穿搭失败:", error);
@@ -282,7 +289,7 @@ export const deleteClothingItem = async (id) => {
     // 更新本地状态
     clothingItems = clothingItems.filter((item) => item.id !== id);
     // 触发更新事件
-    window.dispatchEvent(new CustomEvent("dataUpdated"));
+    notifyDataUpdate();
   } catch (error) {
     console.error("删除衣物失败:", error);
     throw error;
@@ -300,7 +307,7 @@ export const deleteOutfit = async (id) => {
     // 更新本地状态
     outfits = outfits.filter((item) => item.id !== id);
     // 触发更新事件
-    window.dispatchEvent(new CustomEvent("dataUpdated"));
+    notifyDataUpdate();
   } catch (error) {
     console.error("删除穿搭失败:", error);
     throw error;
@@ -335,15 +342,9 @@ export const getOutfitById = async (id) => {
 
 //////////////////////////////////////////////////////////////////
 // 更新穿搭信息
-// //   const updatedOutfit = {
-//   name,
-//   tags: tags,
-//   image_urls: imageUrls.length > 0 ? imageUrls : [],
-//   items: selectedItems,
-// };
 export const updateOutfit = async (id, outfitData) => {
   try {
-    const { data: updatedOutfit, error: outfitError } = await supabase
+    const { error: outfitError } = await supabase
       .from("outfits")
       .update({
         name: outfitData.name,
@@ -398,10 +399,8 @@ export const updateOutfit = async (id, outfitData) => {
 
     // 更新本地状态
     outfits = [completeOutfit, ...outfits];
-
-    // // 触发更新事件
-    // window.dispatchEvent(new CustomEvent("dataUpdated"));
-
+    // 触发更新事件
+    notifyDataUpdate();
     return completeOutfit;
   } catch (error) {
     console.error("更新穿搭失败:", error);
