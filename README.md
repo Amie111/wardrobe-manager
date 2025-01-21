@@ -1,4 +1,4 @@
-# Amie's Closet (デジタルクローゼット管理アプリ)
+# Amie's Closet (wardrobe-manager デジタルクローゼット管理アプリ)
 
 ## 概要
 このプロジェクトは、個人の衣類やコーディネートを効率的に管理するためのWebアプリケーションです。直感的なUIで衣類の分類、コーディネートの作成、画像管理が可能です。
@@ -46,10 +46,10 @@
 ## インストール方法
 ```bash
 # リポジトリのクローン
-git clone https://github.com/yourusername/amies-closet.git
+git clone https://github.com/yourusername/wardrobe-manager.git
 
 # プロジェクトディレクトリに移動
-cd amies-closet
+cd wardrobe-manager
 
 # 依存関係のインストール
 npm install
