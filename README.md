@@ -1,31 +1,21 @@
-# 衣橱管理系统 (Wardrobe Manager)
+# 衣類管理システム (Wardrobe Manager)
 
-一个基于 React 的个人衣橱管理应用，帮助用户更好地管理自己的衣物。
+React ベースの個人用衣類管理アプリで、ユーザーが自分の衣類を効率的に管理できるようサポートします。
 
-## 功能特点
+## 機能の特徴
+- 衣類画像のアップロードとプレビュー  
+- 衣類の分類管理とフィルタリング機能  
+- タグ付けシステム  
+- コーディネートの組み合わせ提案機能  
+- レスポンシブデザイン  
 
-- 衣物图片上传与预览
-- 衣物分类管理
-- 标签系统
-- 筛选功能
-- 响应式设计
+## 技術スタック
+- React  
+- React Router  
+- Tailwind CSS  
+- Lucide Icons  
 
-## 技术栈
-
-- React
-- React Router
-- Tailwind CSS
-- Lucide Icons
-
-## 开始使用
-
-1. 克隆项目
-   git clone https://github.com/你的用户名/wardrobe-manager.git
-2. 安装依赖
-   npm install
-3. 启动开发服务器
-   npm start
-
-## 许可证
-
-MIT
+## 使用方法
+1. プロジェクトをクローン  
+   ```bash
+   git clone https://github.com/あなたのユーザー名/wardrobe-manager.git
